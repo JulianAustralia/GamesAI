@@ -13,8 +13,10 @@ public class BartKeyboardMovement : MonoBehaviour {
 
 	protected void Update () {
 
-		_movement.RotateY (
-			Input.GetAxis("Vertical")
+		_movement.Rotate(
+			0,
+			Input.GetAxis("Horizontal"),
+			0
 		);
 
 		_movement.MoveForward(

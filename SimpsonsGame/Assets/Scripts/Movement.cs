@@ -19,8 +19,9 @@ public class Movement : MonoBehaviour {
 		_rigidbody = GetComponent<Rigidbody>();
 	}
 
-	public void RotateY(float targetVelocity) {
-		//*= Quaternion.Euler(Vector3.up * 20);
+	public void Rotate(float xRot, float yRot, float zRot) {
+
+		_rigidbody.transform.Rotate(xRot, yRot, zRot);
 	}
 
 	public void Move(Vector3 targetVelocity) {
