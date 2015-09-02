@@ -9,23 +9,43 @@ public class Movement : MonoBehaviour {
 
 	private Rigidbody _rigidbody;
 
-	protected void Reset(){
-		GetComponent<Rigidbody> ().useGravity = false;
+	protected void Reset() {
+
+		_rigidbody = GetComponent<Rigidbody>();
 	}
 
-	protected void Awake(){
-		_rigidbody = GetComponent<Rigidbody> ();
+	protected void Awake() {
+
+		_rigidbody = GetComponent<Rigidbody>();
 	}
 
-	public void Move(Vector3 targetVelocity){
-		if (targetVelocity.sqrMagnitude > 1)
-			targetVelocity.Normalize ();
+	public void RotateY(float targetVelocity) {
+		//*= Quaternion.Euler(Vector3.up * 20);
+	}
+
+	public void Move(Vector3 targetVelocity) {
+
+		if (targetVelocity.sqrMagnitude > 1) {
+
+			targetVelocity.Normalize();
+		}
 
 		targetVelocity *= Speed;
 
 		Vector3 acceleration = (targetVelocity - _rigidbody.velocity) * Accel;
-		if(acceleration.magnitude > Accel)
+
+		if (acceleration.magnitude > Accel) {
+
 			acceleration = acceleration.normalized * Accel;
+		}
+
 		_rigidbody.velocity += acceleration * Time.deltaTime;
+	}
+
+	public void MoveForward(float targetVelocity) {
+
+		Move(
+			_rigidbody.transform.forward * targetVelocity
+		);
 	}
 }
