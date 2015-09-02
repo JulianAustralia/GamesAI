@@ -6,8 +6,11 @@ public class DOMECamera : MonoBehaviour {
 
 	public Vector3 center;
 	public float radius;
+	public float minRadius;
+	public float maxRadius;
 	public float horizontalSpeed = 2f;
 	public float verticalSpeed = 2f;
+	public float scrollSpeed = 1000f;
 
 	public float horizontalAngle = 0f;
 	public float verticalAngle = .1f;
@@ -18,13 +21,14 @@ public class DOMECamera : MonoBehaviour {
 		
 		_camera = GetComponent<Camera>();
 
-		_updateChanges(0, 0);
+		_updateChanges(0, 0, 0);
 	}
 
 	void Update () {
 	
 		float dRotationHorizontal = 0;
 		float dRotationVertical = 0;
+		float dScroll = Input.GetAxis("Mouse ScrollWheel");
 
 		if (Input.GetKey(KeyCode.W)) {
 			
@@ -46,19 +50,24 @@ public class DOMECamera : MonoBehaviour {
 			dRotationHorizontal -= horizontalSpeed;
 		}
 
-		if (dRotationHorizontal != 0 || dRotationVertical != 0) {
+		if (dScroll != 0 || dRotationHorizontal != 0 || dRotationVertical != 0) {
 
-			_updateChanges(dRotationHorizontal, dRotationVertical);
+			_updateChanges(-dScroll, dRotationHorizontal, dRotationVertical);
 		}
 	}
 
-	private void _updateChanges(float drH, float drV) {
+	private void _updateChanges(float dScroll, float drH, float drV) {
 
 		horizontalAngle = (horizontalAngle + drH * Time.deltaTime) % 360;
 		verticalAngle = Mathf.Clamp(
 			verticalAngle + drV * Time.deltaTime,
 			.1f,
 			Mathf.PI / 2 - .1f
+		);
+		radius = Mathf.Clamp(
+			radius + dScroll * scrollSpeed * Time.deltaTime,
+			minRadius,
+			maxRadius
 		);
 		
 		float radiusSinVertical = radius * Mathf.Sin(verticalAngle);
