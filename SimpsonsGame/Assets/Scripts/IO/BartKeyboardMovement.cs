@@ -13,10 +13,40 @@ public class BartKeyboardMovement : MonoBehaviour {
 
 	protected void Update () {
 
-		int forwardback = Input.GetKey(KeyCode.UpArrow) ? -1 : Input.GetKey(KeyCode.DownArrow) ? 1 : 0;
-		int leftright = Input.GetKey(KeyCode.LeftArrow) ? -1 : Input.GetKey(KeyCode.RightArrow) ? 1 : 0;
+		bool u = Input.GetKey(KeyCode.UpArrow);
+		bool d = Input.GetKey(KeyCode.DownArrow);
+		bool l = Input.GetKey(KeyCode.LeftArrow);
+		bool r = Input.GetKey(KeyCode.RightArrow);
 
-		_movement.Rotate(0, -forwardback * leftright, 0);
+		float forwardback = 0;
+		float leftright = 0;
+
+		if (u) {
+
+			if (!d) {
+
+				forwardback = 1;
+			}
+		} else if (d) {
+
+			forwardback = -1;
+		}
+
+		if (l) {
+
+			if (!r) {
+
+				leftright = -1;
+			}
+		} else if (r) {
+
+			leftright = 1;
+		}
+
+		// If forwardback is negative then invert leftright to make Bart behave like 4wheeled vehicle
+		float rotateY = forwardback * leftright;
+
+		_movement.Rotate(0, rotateY, 0);
 
 		_movement.MoveForward(
 			forwardback
