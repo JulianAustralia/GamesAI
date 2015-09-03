@@ -13,14 +13,13 @@ public class BartKeyboardMovement : MonoBehaviour {
 
 	protected void Update () {
 
-		_movement.Rotate(
-			0,
-			Input.GetAxis("Horizontal"),
-			0
-		);
+		int forwardback = Input.GetKey(KeyCode.UpArrow) ? -1 : Input.GetKey(KeyCode.DownArrow) ? 1 : 0;
+		int leftright = Input.GetKey(KeyCode.LeftArrow) ? -1 : Input.GetKey(KeyCode.RightArrow) ? 1 : 0;
+
+		_movement.Rotate(0, -forwardback * leftright, 0);
 
 		_movement.MoveForward(
-			Input.GetAxis("Vertical")
+			forwardback
 		);
 	}
 }
