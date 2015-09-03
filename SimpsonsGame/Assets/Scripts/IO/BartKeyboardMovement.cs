@@ -44,9 +44,12 @@ public class BartKeyboardMovement : MonoBehaviour {
 		}
 
 		// If forwardback is negative then invert leftright to make Bart behave like 4wheeled vehicle
-		float rotateY = forwardback * leftright;
+		if (forwardback < 0) {
 
-		_movement.Rotate(0, rotateY, 0);
+			leftright = -leftright;
+		}
+
+		_movement.Rotate(0, leftright, 0);
 
 		_movement.MoveForward(
 			forwardback
