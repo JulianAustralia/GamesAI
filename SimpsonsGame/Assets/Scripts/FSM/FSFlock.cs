@@ -29,7 +29,7 @@ public class FSFlock : FiniteState {
 
 			Vector3 differenceV = (this.gameObject.transform.position - homer.transform.position);
 
-			if (differenceV.sqrMagnitude > maxFlockDistance) {
+			if (differenceV.sqrMagnitude > maxFlockDistance * maxFlockDistance) {
 
 				continue;
 			}
