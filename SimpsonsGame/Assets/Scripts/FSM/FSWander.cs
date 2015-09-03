@@ -10,7 +10,7 @@ public class FSWander : FiniteState {
 
 		_steeringController = GetComponent<SteeringController>();
 
-		SteeringBehaviour[] behvaiours = {new SteerWander()};
+		SteeringBehaviour[] behvaiours = {new SteerWanderXZ()};
 
 		_steeringController.SetBehaviours(behvaiours);
 	}

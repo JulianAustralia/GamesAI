@@ -2,18 +2,27 @@ using UnityEngine;
 using System.Collections;
 using System;
 
-public class SteerWander : SteeringBehaviour {
+public class SteerWanderXZ : SteeringBehaviour {
+
+	public float Speed = 10f;
+	private float angle;
 
 	protected void Awake() {
 
+		angle = _newFloat((float) (2 * Math.PI));
 	}
 	
 	public override Vector3 GetSteering() {
 
-		float x = 0;
-		float y = 0;
-		float z = 0;
+		float maxAdjustment = Speed * Time.deltaTime;
 
-		return new Vector3(x, y, z);
+		angle += _newFloat(maxAdjustment);
+
+		return new Vector3(Mathf.Sin(angle), 0, Mathf.Cos(angle));
+	}
+
+	private float _newFloat(float minMax) {
+
+		return UnityEngine.Random.Range(-minMax, minMax);
 	}
 }

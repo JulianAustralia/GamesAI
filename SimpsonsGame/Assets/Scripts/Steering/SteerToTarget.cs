@@ -5,7 +5,6 @@ using System;
 public class SteerToTarget : SteeringBehaviour {
 	
 	public Transform target;
-	public float MaxForce = 2;
 	public float MinDistance = 3;
 
 	private float _MinDistSqr;
@@ -24,6 +23,6 @@ public class SteerToTarget : SteeringBehaviour {
 			return Vector3.zero;
 		}
 		
-		return Vector3.ClampMagnitude(vecToTarget, MaxForce);
+		return vecToTarget.normalized;
 	}
 }

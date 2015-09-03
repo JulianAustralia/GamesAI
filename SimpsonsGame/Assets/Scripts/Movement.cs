@@ -25,15 +25,8 @@ public class Movement : MonoBehaviour {
 	}
 
 	public void Move(Vector3 targetVelocity) {
-
-		if (targetVelocity.sqrMagnitude > 1) {
-
-			targetVelocity.Normalize();
-		}
-
-		targetVelocity *= Speed;
-
-		Vector3 acceleration = (targetVelocity - _rigidbody.velocity) * Accel;
+	
+		Vector3 acceleration = ((targetVelocity.normalized * Speed) - _rigidbody.velocity) * Accel;
 
 		if (acceleration.magnitude > Accel) {
 
