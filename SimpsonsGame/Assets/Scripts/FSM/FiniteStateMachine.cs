@@ -7,13 +7,13 @@ public class FiniteStateMachine : MonoBehaviour {
 
 	private FiniteState _currentState;
 
-	void Awake () {
+	protected void Awake () {
 	
 		_currentState = initialState;
 	}
 
 	void Update () {
 	
-		_currentState = _currentState.update();
+		_currentState = _currentState.CheckState();
 	}
 }

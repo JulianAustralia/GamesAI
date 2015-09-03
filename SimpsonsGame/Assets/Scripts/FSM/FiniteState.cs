@@ -4,5 +4,5 @@ using System.Collections;
 [RequireComponent(typeof(FiniteStateMachine))]
 public abstract class FiniteState : MonoBehaviour {
 
-	public abstract FiniteState update();
+	public abstract FiniteState CheckState();
 }

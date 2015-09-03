@@ -6,16 +6,19 @@ public class SteeringController : MonoBehaviour {
 	
 	private SteeringBehaviour[] _steeringBehaviours;
 	private Movement _movement;
-	
-	void Awake() {
 
-		_steeringBehaviours = GetComponents<SteeringBehaviour>();
+	protected void Awake() {
+
 		_movement = GetComponent<Movement>();
 	}
 	
-	void Update() {
+	public void SetBehaviours(SteeringBehaviour[] steeringBehaviours) {
 
-		// There are lots of ways to combine steering behaviours
+		_steeringBehaviours = steeringBehaviours;
+	}
+	
+	public void Steer() {
+
 		var steering = Vector3.zero;
 
 		foreach (var behaviour in _steeringBehaviours) {
