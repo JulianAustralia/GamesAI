@@ -5,6 +5,7 @@ using System;
 public class SteerFromTarget : SteeringBehaviour {
 	
 	public Transform target;
+	public Transform self;
 	public float MaxForce = 2;
 	public float MinDistance = 10;
 
@@ -17,7 +18,7 @@ public class SteerFromTarget : SteeringBehaviour {
 	
 	public override Vector3 GetSteering() {
 		
-		Vector3 vecFromTarget = transform.position - target.position;
+		Vector3 vecFromTarget = self.position - target.position;
 
 		if (vecFromTarget.sqrMagnitude > _MinDistSqr) {
 			

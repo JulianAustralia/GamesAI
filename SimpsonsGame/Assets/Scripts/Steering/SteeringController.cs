@@ -1,10 +1,11 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 [RequireComponent(typeof(Movement))]
 public class SteeringController : MonoBehaviour {
 	
-	private SteeringBehaviour[] _steeringBehaviours;
+	private List<SteeringBehaviour> _steeringBehaviours;
 	private Movement _movement;
 
 	protected void Awake() {
@@ -12,7 +13,7 @@ public class SteeringController : MonoBehaviour {
 		_movement = GetComponent<Movement>();
 	}
 	
-	public void SetBehaviours(SteeringBehaviour[] steeringBehaviours) {
+	public void SetBehaviours(List<SteeringBehaviour> steeringBehaviours) {
 
 		_steeringBehaviours = steeringBehaviours;
 	}

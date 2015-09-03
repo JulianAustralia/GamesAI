@@ -2,6 +2,7 @@
 using System.Collections;
 
 [RequireComponent(typeof(Rigidbody))]
+[RequireComponent(typeof(GameObject))]
 public class Movement : MonoBehaviour {
 
 	public float Speed = 2;

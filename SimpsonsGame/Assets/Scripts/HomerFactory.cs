@@ -1,10 +1,11 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class HomerFactory : MonoBehaviour {
 
 	public int numberOfHomers;
-	public GameObject[] homers;
+	public List<GameObject> homers;
 
 	void Start () {
 	
@@ -21,14 +22,16 @@ public class HomerFactory : MonoBehaviour {
 
 		for (int i = 0; i < numberOfHomers; ++i) {
 
-			Instantiate(
-				homer,
-				new Vector3(
-					UnityEngine.Random.Range(minX, maxX),
-					homer.transform.position.y,
-					UnityEngine.Random.Range(minZ, maxZ)
-				),
-				Quaternion.identity
+			homers.Add(
+				(GameObject) Instantiate(
+					homer,
+					new Vector3(
+						UnityEngine.Random.Range(minX, maxX),
+						homer.transform.position.y,
+						UnityEngine.Random.Range(minZ, maxZ)
+					),
+					Quaternion.identity
+				)
 			);
 		}
 

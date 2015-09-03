@@ -5,7 +5,8 @@ using System;
 public class SteerToTarget : SteeringBehaviour {
 	
 	public Transform target;
-	public float MinDistance = 3;
+	public Transform self;
+	public float MinDistance = 1;
 
 	private float _MinDistSqr;
 
@@ -16,7 +17,7 @@ public class SteerToTarget : SteeringBehaviour {
 	
 	public override Vector3 GetSteering() {
 		
-		Vector3 vecToTarget = target.position - transform.position;
+		Vector3 vecToTarget = target.position - self.position;
 
 		if (vecToTarget.sqrMagnitude < _MinDistSqr) {
 			
