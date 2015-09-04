@@ -15,6 +15,10 @@ public class SteerFromTarget : SteeringBehaviour {
 		
 		_MinDistSqr = MinDistance * MinDistance;
 	}
+
+	public override void Initialize() {
+
+	}
 	
 	public override Vector3 GetSteering() {
 		

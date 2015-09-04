@@ -4,25 +4,23 @@ using System;
 
 public class SteerWanderXZ : SteeringBehaviour {
 
-	public float Speed = 10f;
-	private float angle;
+	public float maxChange = .1f;
+	public Transform self;
+	private float _angle;
 
 	protected void Awake() {
 
-		angle = _newFloat((float) (2 * Math.PI));
 	}
-	
+
+	public override void Initialize() {
+
+		_angle = self.rotation.eulerAngles.y * Mathf.PI / 180f;
+	}
+
 	public override Vector3 GetSteering() {
 
-		float maxAdjustment = Speed * Time.deltaTime;
+		_angle += UnityEngine.Random.Range(-30, 30) * Time.deltaTime;
 
-		angle += _newFloat(maxAdjustment);
-
-		return new Vector3(Mathf.Sin(angle), 0, Mathf.Cos(angle));
-	}
-
-	private float _newFloat(float minMax) {
-
-		return UnityEngine.Random.Range(-minMax, minMax);
+		return new Vector3(Mathf.Sin(_angle), 0, Mathf.Cos(_angle));
 	}
 }

@@ -6,12 +6,18 @@ using System.Collections.Generic;
 [RequireComponent(typeof(FSWander))]
 public class FSFlock : FiniteState {
 
+	public float minFlockDistance;
 	public float maxFlockDistance;
+	private float _minSqr;
+	private float _maxSqr;
 	private SteeringController _steeringController;
 	
 	protected void Awake() {
 
 		_steeringController = GetComponent<SteeringController>();
+		
+		_minSqr = minFlockDistance * minFlockDistance;
+		_maxSqr = maxFlockDistance * maxFlockDistance;
 	}
 	
 	public override FiniteState CheckState() {
@@ -27,9 +33,9 @@ public class FSFlock : FiniteState {
 				continue;
 			}
 
-			Vector3 differenceV = (this.gameObject.transform.position - homer.transform.position);
+			float sMag = (this.gameObject.transform.position - homer.transform.position).sqrMagnitude;
 
-			if (differenceV.sqrMagnitude > maxFlockDistance * maxFlockDistance) {
+			if (sMag > _maxSqr || sMag < _minSqr) {
 
 				continue;
 			}
@@ -37,6 +43,7 @@ public class FSFlock : FiniteState {
 			SteerToTarget steer = new SteerToTarget();
 			steer.self = this.gameObject.transform;
 			steer.target = homer.transform;
+			steer.Initialize();
 
 			behaviours.Add(steer);
 		}

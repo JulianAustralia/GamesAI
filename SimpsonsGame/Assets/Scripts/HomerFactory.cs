@@ -22,17 +22,21 @@ public class HomerFactory : MonoBehaviour {
 
 		for (int i = 0; i < numberOfHomers; ++i) {
 
-			homers.Add(
-				(GameObject) Instantiate(
-					homer,
-					new Vector3(
-						UnityEngine.Random.Range(minX, maxX),
-						homer.transform.position.y,
-						UnityEngine.Random.Range(minZ, maxZ)
-					),
-					Quaternion.identity
-				)
+			GameObject newHomer = (GameObject) Instantiate(
+				homer,
+				new Vector3(
+					UnityEngine.Random.Range(minX, maxX),
+					homer.transform.position.y,
+					UnityEngine.Random.Range(minZ, maxZ)
+				),
+				Quaternion.identity
 			);
+
+			float radians = UnityEngine.Random.Range(0, 360);
+
+			newHomer.transform.eulerAngles = new Vector3(Mathf.Sin(radians), 0, Mathf.Cos(radians));
+
+			homers.Add(newHomer);
 		}
 
 		// We could generate one less homer and randomly position this one
