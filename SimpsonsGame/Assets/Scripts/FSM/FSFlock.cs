@@ -2,58 +2,38 @@
 using System.Collections;
 using System.Collections.Generic;
 
+[RequireComponent(typeof(GameObjectEdgeReader))]
 [RequireComponent(typeof(SteeringController))]
 [RequireComponent(typeof(FSWander))]
 public class FSFlock : FiniteState {
 
 	public float minFlockDistance;
 	public float maxFlockDistance;
-	private float _minSqr;
-	private float _maxSqr;
 	private SteeringController _steeringController;
+	private GameObjectEdgeReader _edgeReader;
+	private FSWander _wander;
 	
 	protected void Awake() {
 
 		_steeringController = GetComponent<SteeringController>();
-		
-		_minSqr = minFlockDistance * minFlockDistance;
-		_maxSqr = maxFlockDistance * maxFlockDistance;
+		_edgeReader = GetComponent<GameObjectEdgeReader>();
+		_wander = GetComponent<FSWander>();
 	}
 	
 	public override FiniteState CheckState() {
 
-		GameObject[] homers = GameObject.FindGameObjectsWithTag("Homer");
+		List<GameObject> closeHomers = _edgeReader.GetEdges(this.gameObject, minFlockDistance, maxFlockDistance);
 
-		List<SteeringBehaviour> behaviours = new List<SteeringBehaviour>();
+		if (closeHomers.Count == 0) {
 
-		foreach (GameObject homer in homers) {
-			
-			if (this.gameObject == homer) {
-				
-				continue;
-			}
-
-			float sMag = (this.gameObject.transform.position - homer.transform.position).sqrMagnitude;
-
-			if (sMag > _maxSqr || sMag < _minSqr) {
-
-				continue;
-			}
-
-			SteerToTarget steer = new SteerToTarget();
-			steer.self = this.gameObject.transform;
-			steer.target = homer.transform;
-			steer.Initialize();
-
-			behaviours.Add(steer);
+			return _wander;
 		}
 
-		if (behaviours.Count == 0) {
-
-			return this.GetComponent<FSWander>();
-		}
-
-		_steeringController.SetBehaviours(behaviours);
+		_steeringController.SetBehaviours(
+			closeHomers.ConvertAll<SteeringBehaviour>(
+				(GameObject homer) => new SteerToTarget(this.gameObject.transform, homer.transform)
+			)
+		);
 
 		_steeringController.Steer();
 

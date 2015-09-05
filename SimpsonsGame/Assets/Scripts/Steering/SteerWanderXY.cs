@@ -8,11 +8,9 @@ public class SteerWanderXZ : SteeringBehaviour {
 	public Transform self;
 	private float _angle;
 
-	protected void Awake() {
+	public SteerWanderXZ(Transform s) {
 
-	}
-
-	public override void Initialize() {
+		self = s;
 
 		_angle = self.rotation.eulerAngles.y * Mathf.PI / 180f;
 	}

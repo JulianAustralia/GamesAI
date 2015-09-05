@@ -16,10 +16,6 @@ public class SteerFromTarget : SteeringBehaviour {
 		_MinDistSqr = MinDistance * MinDistance;
 	}
 
-	public override void Initialize() {
-
-	}
-	
 	public override Vector3 GetSteering() {
 		
 		Vector3 vecFromTarget = self.position - target.position;

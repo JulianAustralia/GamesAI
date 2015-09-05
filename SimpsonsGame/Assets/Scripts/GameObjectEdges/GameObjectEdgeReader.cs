@@ -27,8 +27,9 @@ public class GameObjectEdgeReader : MonoBehaviour {
 		// for unsorted arrays like quick, merge, and heap sort.
 		TimSort.ListTimSort<GameObjectEdge>.Sort(_edges, (GameObjectEdge e1, GameObjectEdge e2) => e1.CompareTo(e2));
 
-		int minIndex = _BinSearch(min);
-		int maxIndex = _BinSearch(max);
+		// All the distances are stored as magnitude squared to save on computations, therefore lookup is down with a squared value
+		int minIndex = _BinSearch(min * min);
+		int maxIndex = _BinSearch(max * max);
 
 		return _edges.GetRange(
 			minIndex,
