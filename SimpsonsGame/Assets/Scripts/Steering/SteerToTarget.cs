@@ -14,10 +14,7 @@ public class SteerToTarget : SteeringBehaviour {
 
 		self = s;
 		target = t;
-	}
 
-	protected void Awake() {
-		
 		_MinDistSqr = MinDistance * MinDistance;
 	}
 

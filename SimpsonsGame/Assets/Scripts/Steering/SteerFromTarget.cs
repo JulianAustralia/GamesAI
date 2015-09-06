@@ -6,13 +6,15 @@ public class SteerFromTarget : SteeringBehaviour {
 	
 	public Transform target;
 	public Transform self;
-	public float MaxForce = 2;
 	public float MinDistance = 10;
 
 	private float _MinDistSqr;
 	
-	protected void Awake() {
-		
+	public SteerFromTarget(Transform s, Transform t) {
+
+		self = s;
+		target = t;
+
 		_MinDistSqr = MinDistance * MinDistance;
 	}
 
@@ -25,6 +27,6 @@ public class SteerFromTarget : SteeringBehaviour {
 			return Vector3.zero;
 		}
 		
-		return Vector3.ClampMagnitude(vecFromTarget, MaxForce);
+		return vecFromTarget.normalized;
 	}
 }

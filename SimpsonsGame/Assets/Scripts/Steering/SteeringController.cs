@@ -17,11 +17,33 @@ public class SteeringController : MonoBehaviour {
 		
 		_steeringBehaviours = steeringBehaviours;
 	}
-
+	
 	public void SetBehaviour(SteeringBehaviour behaviour) {
 		
 		_steeringBehaviours = new List<SteeringBehaviour>(1);
-		_steeringBehaviours[0] = behaviour;
+		_steeringBehaviours.Add(behaviour);
+	}
+	
+	public void AddBehaviours(List<SteeringBehaviour> steeringBehaviours) {
+		
+		if (_steeringBehaviours == null) {
+			
+			SetBehaviours(steeringBehaviours);
+		} else {
+			
+			_steeringBehaviours.AddRange(steeringBehaviours);
+		}
+	}
+	
+	public void AddBehaviours(SteeringBehaviour steeringBehaviour) {
+		
+		if (_steeringBehaviours == null) {
+			
+			SetBehaviour(steeringBehaviour);
+		} else {
+			
+			_steeringBehaviours.Add(steeringBehaviour);
+		}
 	}
 	
 	public void Steer() {
