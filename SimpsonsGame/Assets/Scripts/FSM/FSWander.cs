@@ -4,32 +4,27 @@ using System.Collections.Generic;
 
 [RequireComponent(typeof(SteeringController))]
 [RequireComponent(typeof(FSFlock))]
+[RequireComponent(typeof(FSEscape))]
 public class FSWander : FiniteState {
-
-	public float minFlockDistance;
-	public float maxFlockDistance;
 
 	private SteeringController _steeringController;
 	private FSFlock _flock;
+	private FSEscape _escape;
 	private Homer _homer;
 
 	protected void Awake() {
 
 		_steeringController = GetComponent<SteeringController>();
 		_flock = GetComponent<FSFlock>();
+		_escape = GetComponent<FSEscape>();
 		_homer = GetComponent<Homer>();
 	}
 
 	public override FiniteState CheckState() {
 
-		if (
-			_homer.otherHomers.Exists(
-				(h) => _homer.WithinRange (h, minFlockDistance, maxFlockDistance)
-			)
-		) {
+		if (_homer.EnemyTooClose()) return _escape;
 
-			return _flock;
-		}
+		if (_homer.HomerCloseEnoughToFlock()) return _flock;
 
 		_steeringController.SetBehaviour(new SteerWanderXZ(this.gameObject.transform));
 

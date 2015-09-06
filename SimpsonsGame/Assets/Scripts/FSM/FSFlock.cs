@@ -4,42 +4,38 @@ using System.Collections.Generic;
 
 [RequireComponent(typeof(SteeringController))]
 [RequireComponent(typeof(FSWander))]
+[RequireComponent(typeof(FSEscape))]
 public class FSFlock : FiniteState {
-
-	public float minFlockDistance;
-	public float maxFlockDistance;
-	public float minAvoidDistance;
-	public float maxAvoidDistance;
 
 	private SteeringController _steeringController;
 	private FSWander _wander;
+	private FSEscape _escape;
 	private Homer _homer;
 
 	protected void Awake() {
 
 		_steeringController = GetComponent<SteeringController>();
 		_wander = GetComponent<FSWander>();
+		_escape = GetComponent<FSEscape>();
 		_homer = GetComponent<Homer>();
 	}
 	
 	public override FiniteState CheckState() {
+		
+		if (_homer.EnemyTooClose()) return _escape;
 
-		List<Homer> homersInRange = _homer.otherHomers.FindAll(
-			(h) => _homer.WithinRange(h, minFlockDistance, maxFlockDistance)
-		);
+		List<Homer> homersInFlockingRange = _homer.GetHomersCloseEnoughToFlock();
 
-		if (homersInRange.Count == 0) return _wander;
+		if (homersInFlockingRange.Count == 0) return _wander;
 
 		_steeringController.SetBehaviours(
-			homersInRange.ConvertAll<SteeringBehaviour>(
+			homersInFlockingRange.ConvertAll<SteeringBehaviour>(
 				(h) => new SteerToTarget(this.gameObject.transform, h.transform)
 			)
 		);
 
 		_steeringController.AddBehaviours(
-			_homer.otherHomers.FindAll(
-				(h) => _homer.WithinRange(h, minAvoidDistance, maxAvoidDistance)
-			).ConvertAll<SteeringBehaviour>(
+			_homer.GetTooCloseHomers().ConvertAll<SteeringBehaviour>(
 				(h) => new SteerFromTarget(this.gameObject.transform, h.transform)
 			)
 		);
