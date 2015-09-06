@@ -5,11 +5,29 @@ using System.Collections.Generic;
 public class Homer : MonoBehaviour {
 
 	public List<Homer> otherHomers;
+	public List<Enemy> enemies;
 
-	public bool WithinRange(Homer otherHomer, float min, float max) {
+	public bool WithinRange(Homer h, float min, float max) {
 
-		float sMag = (this.gameObject.transform.position - otherHomer.gameObject.transform.position).sqrMagnitude;
+		return WithinRange(h.gameObject, min, max);
+	}
 
-		return min * min <= sMag && sMag <= max * max;
+	public bool WithinRange(Enemy e, float min, float max) {
+
+		return WithinRange(e.gameObject, min, max);
+	}
+
+	public bool WithinRange(GameObject g, float min, float max) {
+
+		return WithinRange(
+			(this.gameObject.transform.position - g.transform.position).sqrMagnitude,
+			min * min,
+			max * max
+		);
+	}
+
+	public bool WithinRange(float x, float min, float max) {
+
+		return min <= x && x <= max;
 	}
 }

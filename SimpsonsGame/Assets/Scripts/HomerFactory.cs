@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 public class HomerFactory : MonoBehaviour {
 
@@ -10,6 +11,7 @@ public class HomerFactory : MonoBehaviour {
 
 	void Start() {
 	
+		List<Enemy> enemies = GameObject.FindGameObjectsWithTag("Enemy").ToList<GameObject>().ConvertAll<Enemy>((go) => go.GetComponent<Enemy>());
 		GameObject homer = GameObject.Find("Homer");
 		GameObject dome = GameObject.Find("Dome");
 
@@ -54,6 +56,7 @@ public class HomerFactory : MonoBehaviour {
 			otherHomers.RemoveAt(i);
 
 			_homers[i].otherHomers = otherHomers;
+			_homers[i].enemies = enemies;
 		}
 	}
 }
