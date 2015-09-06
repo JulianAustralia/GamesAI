@@ -4,44 +4,41 @@ using System.Collections.Generic;
 
 public class Homer : MonoBehaviour {
 
-	public float minDistanceToFlock;
-	public float maxDistanceToFlock;
-	public float minDistanceToAvoidHomers;
-	public float maxDistanceToAvoidHomers;
-	public float minDistanceToAvoidEnemies;
-	public float maxDistanceToAvoidEnemies;
+	public float distFlock;
+	public float distAvoidHomers;
+	public float distAvoidEnemies;
 
 	public List<Homer> otherHomers;
 	public List<Enemy> enemies;
 
 	public bool HomerTooClose() {
 
-		return otherHomers.Exists((h) => WithinRange(h, minDistanceToAvoidHomers, maxDistanceToAvoidHomers));
+		return otherHomers.Exists((h) => WithinRange(h, 0, distAvoidHomers));
 	}
 
 	public List<Homer> GetTooCloseHomers() {
 
-		return otherHomers.FindAll((h) => WithinRange(h, minDistanceToAvoidHomers, maxDistanceToAvoidHomers));
+		return otherHomers.FindAll((h) => WithinRange(h, 0, distAvoidHomers));
 	}
 	
 	public bool HomerCloseEnoughToFlock() {
 
-		return otherHomers.Exists((h) => WithinRange(h, minDistanceToFlock, maxDistanceToFlock));
+		return otherHomers.Exists((h) => WithinRange(h, distAvoidHomers, distFlock));
 	}
 
 	public List<Homer> GetHomersCloseEnoughToFlock() {
 
-		return otherHomers.FindAll((h) => WithinRange(h, minDistanceToFlock, maxDistanceToFlock));
+		return otherHomers.FindAll((h) => WithinRange(h, distAvoidHomers, distFlock));
 	}
 
 	public bool EnemyTooClose() {
 
-		return enemies.Exists((e) => WithinRange(e, minDistanceToAvoidEnemies, maxDistanceToAvoidEnemies));
+		return enemies.Exists((e) => WithinRange(e, 0, distAvoidEnemies));
 	}
 	
 	public List<Enemy> GetTooCloseEnemies() {
 		
-		return enemies.FindAll((e) => WithinRange(e, minDistanceToAvoidEnemies, maxDistanceToAvoidEnemies));
+		return enemies.FindAll((e) => WithinRange(e, 0, distAvoidEnemies));
 	}
 
 	public bool WithinRange(Homer h, float min, float max) { return WithinRange(h.gameObject, min, max); }
