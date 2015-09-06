@@ -6,7 +6,7 @@ public class HomerFactory : MonoBehaviour {
 
 	public int numberOfHomers;
 
-	private List<GameObject> _homers;
+	private List<Homer> _homers;
 
 	void Start() {
 	
@@ -21,7 +21,7 @@ public class HomerFactory : MonoBehaviour {
 		float minZ = dome.transform.position.z - radZ;
 		float maxZ = dome.transform.position.z + radZ;
 
-		_homers = new List<GameObject>(numberOfHomers);
+		_homers = new List<Homer>(numberOfHomers);
 
 		for (int i = 0; i < numberOfHomers; ++i) {
 
@@ -39,12 +39,17 @@ public class HomerFactory : MonoBehaviour {
 
 			newHomer.transform.eulerAngles = new Vector3(Mathf.Sin(radians), 0, Mathf.Cos(radians));
 
-			_homers.Add(newHomer);
+			_homers.Add(newHomer.GetComponent<Homer>());
 		}
 		
 		// We could generate one less homer and randomly position this one
 		// But this way is cleaner and this function will only be called once
 		// per game so the performance hit is negligible
 		GameObject.Destroy(homer);
+
+		for (int i = 0; i < numberOfHomers; ++i) {
+
+			_homers[i].otherHomers = _homers.FindAll((Homer h) => h != _homers[i]);
+		}
 	}
 }

@@ -14,8 +14,7 @@ public class FSFlock : FiniteState {
 
 	private SteeringController _steeringController;
 	private FSWander _wander;
-
-	private List<GameObject> _homers;
+	private Homer _homer;
 
 	public FSFlock() {
 
@@ -27,39 +26,27 @@ public class FSFlock : FiniteState {
 
 		_steeringController = GetComponent<SteeringController>();
 		_wander = GetComponent<FSWander>();
-		
-		GameObject[] homers = GameObject.FindGameObjectsWithTag("Homer");
-		
-		_homers = new List<GameObject>(homers.Length - 1);
-		
-		for (int i = 0; i < homers.Length; ++i) {
-			
-			if (this.gameObject != homers[i]) {
-				
-				_homers.Add(homers[i]);
-			}
-		}
+		_homer = GetComponent<Homer>();
 	}
 	
 	public override FiniteState CheckState() {
 
-		List<GameObject> homersInRange = _homers.FindAll(
-			(GameObject homer) => {
+		Transform thisTransform = this.gameObject.transform;
 
-				float sMag = (this.gameObject.transform.position - homer.transform.position).sqrMagnitude;
+		List<Homer> homersInRange = _homer.otherHomers.FindAll(
+			(Homer homer) => {
+
+				float sMag = (thisTransform.position - homer.transform.position).sqrMagnitude;
 
 				return _minSqr <= sMag && sMag <= _maxSqr;
 			}
 		);
 
-		if (homersInRange.Count == 0) {
-
-			return _wander;
-		}
+		if (homersInRange.Count == 0) return _wander;
 
 		_steeringController.SetBehaviours (
 			homersInRange.ConvertAll<SteeringBehaviour>(
-				(GameObject homer) => new SteerToTarget(this.gameObject.transform, homer.transform)
+				(Homer homer) => new SteerToTarget(thisTransform, homer.transform)
 			)
 		);
 
