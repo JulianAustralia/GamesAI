@@ -15,24 +15,22 @@ public class HomerFactory : MonoBehaviour {
 		GameObject homer = GameObject.Find("Homer");
 		GameObject dome = GameObject.Find("Dome");
 
-		float radX = dome.transform.localScale.x / 2f;
-		float minX = dome.transform.position.x - radX;
-		float maxX = dome.transform.position.x + radX;
-
-		float radZ = dome.transform.localScale.z / 2f;
-		float minZ = dome.transform.position.z - radZ;
-		float maxZ = dome.transform.position.z + radZ;
+		// Have a buffer of half (position will be centered at max) a Homer width between the edge of the dome and the max spawn position
+		float spawnRadius = Mathf.Min(dome.transform.localScale.x / 2f, dome.transform.localScale.z / 2f) - 2 * Mathf.Max(homer.transform.localScale.x, homer.transform.localScale.z);
 
 		_homers = new List<Homer>(numberOfHomers);
 
 		for (int i = 0; i < numberOfHomers; ++i) {
 
+			float angle = UnityEngine.Random.Range(0, 2 * Mathf.PI);
+			float radius = UnityEngine.Random.Range(0, spawnRadius);
+
 			GameObject newHomer = (GameObject) Instantiate(
 				homer,
 				new Vector3(
-					UnityEngine.Random.Range(minX, maxX),
+					Mathf.Sin(angle) * radius,
 					homer.transform.position.y,
-					UnityEngine.Random.Range(minZ, maxZ)
+					Mathf.Cos(angle) * radius
 				),
 				Quaternion.identity
 			);
