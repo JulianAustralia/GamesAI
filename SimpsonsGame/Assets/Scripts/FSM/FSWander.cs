@@ -9,18 +9,9 @@ public class FSWander : FiniteState {
 	public float minFlockDistance;
 	public float maxFlockDistance;
 
-	private float _minSqr;
-	private float _maxSqr;
-
 	private SteeringController _steeringController;
 	private FSFlock _flock;
 	private Homer _homer;
-	
-	public FSWander() {
-		
-		_maxSqr = maxFlockDistance * maxFlockDistance;
-		_minSqr = minFlockDistance * minFlockDistance;
-	}
 
 	protected void Awake() {
 
@@ -31,24 +22,16 @@ public class FSWander : FiniteState {
 
 	public override FiniteState CheckState() {
 
-		Transform thisTransform = this.gameObject.transform;
-
 		if (
-			_homer.otherHomers.Exists (
-				(Homer homer) => {
-
-					float sMag = (thisTransform.position - homer.transform.position).sqrMagnitude;
-
-					return _minSqr <= sMag && sMag <= _maxSqr;
-				}
+			_homer.otherHomers.Exists(
+				(h) => _homer.WithinRange (h, minFlockDistance, maxFlockDistance)
 			)
-		) return _flock;
+		) {
 
-		List<SteeringBehaviour> behvaiours = new List<SteeringBehaviour>();
+			return _flock;
+		}
 
-		behvaiours.Add(new SteerWanderXZ(thisTransform));
-		
-		_steeringController.SetBehaviours(behvaiours);
+		_steeringController.SetBehaviour(new SteerWanderXZ(this.gameObject.transform));
 
 		_steeringController.Steer();
 

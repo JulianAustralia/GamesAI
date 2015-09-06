@@ -14,8 +14,14 @@ public class SteeringController : MonoBehaviour {
 	}
 	
 	public void SetBehaviours(List<SteeringBehaviour> steeringBehaviours) {
-
+		
 		_steeringBehaviours = steeringBehaviours;
+	}
+
+	public void SetBehaviour(SteeringBehaviour behaviour) {
+		
+		_steeringBehaviours = new List<SteeringBehaviour>(1);
+		_steeringBehaviours[0] = behaviour;
 	}
 	
 	public void Steer() {

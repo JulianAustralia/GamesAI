@@ -35,9 +35,9 @@ public class HomerFactory : MonoBehaviour {
 				Quaternion.identity
 			);
 
-			float radians = UnityEngine.Random.Range(0, 360);
-
-			newHomer.transform.eulerAngles = new Vector3(Mathf.Sin(radians), 0, Mathf.Cos(radians));
+			Vector3 euler = newHomer.transform.eulerAngles;
+			euler.y = UnityEngine.Random.Range(0f, 360f);
+			newHomer.transform.eulerAngles = euler;
 
 			_homers.Add(newHomer.GetComponent<Homer>());
 		}
@@ -49,7 +49,11 @@ public class HomerFactory : MonoBehaviour {
 
 		for (int i = 0; i < numberOfHomers; ++i) {
 
-			_homers[i].otherHomers = _homers.FindAll((Homer h) => h != _homers[i]);
+			List<Homer> otherHomers = new List<Homer>(_homers);
+
+			otherHomers.RemoveAt(i);
+
+			_homers[i].otherHomers = otherHomers;
 		}
 	}
 }
