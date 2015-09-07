@@ -9,6 +9,11 @@ public class HomerFactory : MonoBehaviour {
 
 	private List<Homer> _homers;
 
+	public float stageTime = 120;
+	public int points = 0;
+
+	public GameObject s;
+
 	void Start() {
 	
 		List<Enemy> enemies = GameObject.FindGameObjectsWithTag("Enemy").ToList<GameObject>().ConvertAll<Enemy>((go) => go.GetComponent<Enemy>());
@@ -55,6 +60,28 @@ public class HomerFactory : MonoBehaviour {
 
 			_homers[i].otherHomers = otherHomers;
 			_homers[i].enemies = enemies;
+		}
+	}
+
+	void Update () {
+		if (stageTime > 0)
+			stageTime -= Time.deltaTime;
+		
+		foreach(Homer h in _homers){
+			if ((h.gameObject.transform.position.x <= s.transform.position.x +5) && 
+			    (h.gameObject.transform.position.x >= s.transform.position.x -5) &&
+			    (h.gameObject.transform.position.z <= s.transform.position.z +5) && 
+			    (h.gameObject.transform.position.z >= s.transform.position.z -5))
+				if (stageTime > 0)
+					points++;
+		}
+		
+		if (stageTime > 0) {
+			Debug.Log(points);
+			Debug.Log(stageTime);
+		} else { 
+			Debug.Log("Time is over");
+			Debug.Log("Final points = " + points);
 		}
 	}
 }
