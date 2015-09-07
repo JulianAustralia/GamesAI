@@ -3,20 +3,21 @@ using System.Collections;
 using System.Collections.Generic;
 
 [RequireComponent(typeof(SteeringController))]
-[RequireComponent(typeof(FSWander))]
-[RequireComponent(typeof(FSEscape))]
-public class FSFlock : FiniteState {
+[RequireComponent(typeof(FS_Homer_Wander))]
+[RequireComponent(typeof(FS_Homer_Escape))]
+[RequireComponent(typeof(Homer))]
+public class FS_Homer_Flock : FiniteState {
 
 	private SteeringController _steeringController;
-	private FSWander _wander;
-	private FSEscape _escape;
+	private FS_Homer_Wander _wander;
+	private FS_Homer_Escape _escape;
 	private Homer _homer;
 
 	protected void Awake() {
 
 		_steeringController = GetComponent<SteeringController>();
-		_wander = GetComponent<FSWander>();
-		_escape = GetComponent<FSEscape>();
+		_wander = GetComponent<FS_Homer_Wander>();
+		_escape = GetComponent<FS_Homer_Escape>();
 		_homer = GetComponent<Homer>();
 	}
 	

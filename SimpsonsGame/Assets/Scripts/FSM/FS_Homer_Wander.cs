@@ -1,22 +1,23 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
 [RequireComponent(typeof(SteeringController))]
-[RequireComponent(typeof(FSFlock))]
-[RequireComponent(typeof(FSEscape))]
-public class FSWander : FiniteState {
+[RequireComponent(typeof(FS_Homer_Flock))]
+[RequireComponent(typeof(FS_Homer_Escape))]
+[RequireComponent(typeof(Homer))]
+public class FS_Homer_Wander : FiniteState {
 
 	private SteeringController _steeringController;
-	private FSFlock _flock;
-	private FSEscape _escape;
+	private FS_Homer_Flock _flock;
+	private FS_Homer_Escape _escape;
 	private Homer _homer;
 
 	protected void Awake() {
 
 		_steeringController = GetComponent<SteeringController>();
-		_flock = GetComponent<FSFlock>();
-		_escape = GetComponent<FSEscape>();
+		_flock = GetComponent<FS_Homer_Flock>();
+		_escape = GetComponent<FS_Homer_Escape>();
 		_homer = GetComponent<Homer>();
 	}
 
