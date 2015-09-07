@@ -40,11 +40,17 @@ public class PathFinder : MonoBehaviour {
 
 			if (Mathf.Min(newNode.x, newNode.z) < -100 || Mathf.Max(newNode.x, newNode.z) > 100) {
 
-				Debug.Log("Error: " + newNode.x + " " + newNode.z + " out of range");
+				GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+				cube.transform.localScale = new Vector3(1f, 20f, 1f);
+				cube.transform.position = new Vector3((float) newNode.x, 10f, (float) newNode.z);
+
 				continue;
 			}
 
 			if (_collision(newNode.x, newNode.z)) {
+
+				GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+				cube.transform.position = new Vector3((float) newNode.x, .5f, (float) newNode.z);
 
 				continue;
 			}
