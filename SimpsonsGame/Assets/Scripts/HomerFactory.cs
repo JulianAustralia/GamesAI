@@ -80,7 +80,7 @@ public class HomerFactory : MonoBehaviour {
 		if (second > stageTime) {
 			second = (int)stageTime;
 
-			foreach(Homer homer in _homers){
+			foreach(Homer homer in homers){
 				if ((homer.gameObject.transform.position.x <= scoringArea.transform.position.x +5) && 
 				    (homer.gameObject.transform.position.x >= scoringArea.transform.position.x -5) &&
 				    (homer.gameObject.transform.position.z <= scoringArea.transform.position.z +5) && 

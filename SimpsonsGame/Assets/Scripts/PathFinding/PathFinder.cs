@@ -38,10 +38,20 @@ public class PathFinder : MonoBehaviour {
 			_PathNodeBuilder builder = coords.Pop();
 			PathNode newNode = builder.newPathNode;
 
+			/*if (newNode.x < -100 || newNode.z < -100 || newNode.x > 100 || newNode.z > 100) {
+
+				GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+				cube.transform.localScale = new Vector3(1f, 20f, 1f);
+				cube.transform.position = new Vector3((float) newNode.x, 10f, (float) newNode.z);
+				
+				continue;
+			}*/
+
 			if (_collision(newNode.x, newNode.z)) {
 
-				//GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
-				//cube.transform.position = new Vector3((float) newNode.x, .5f, (float) newNode.z);
+				// Visually debug the graph creation
+				/*GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+				cube.transform.position = new Vector3((float) newNode.x, .5f, (float) newNode.z);*/
 
 				continue;
 			}
@@ -93,7 +103,7 @@ public class PathFinder : MonoBehaviour {
 		// Make the corners cross into next box so that paths arn't made tightly around obstacles
 		// This is done with the buffer
 
-		const float buffer = 1.6f;
+		const float buffer = .4f;
 
 		float left = (float) x - buffer;
 		float right = (float) x + buffer;
