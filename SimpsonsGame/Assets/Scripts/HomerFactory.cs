@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,7 +13,13 @@ public class HomerFactory : MonoBehaviour {
 	public float stageTime = 120;
 	public int points = 0;
 
-	public GameObject s;
+	public GameObject scoringArea;
+
+	public GameObject scoreUI;
+	public GameObject timerUI;
+
+	private Text scoreTxt;
+	private Text timerTxt;
 
 	void Start() {
 	
@@ -61,27 +68,33 @@ public class HomerFactory : MonoBehaviour {
 			_homers[i].otherHomers = otherHomers;
 			_homers[i].enemies = enemies;
 		}
-	}
 
+		scoreTxt = scoreUI.GetComponent<Text>();
+		timerTxt = timerUI.GetComponent<Text>();
+	}
+	
 	void Update () {
 		if (stageTime > 0)
 			stageTime -= Time.deltaTime;
-		
-		foreach(Homer h in _homers){
-			if ((h.gameObject.transform.position.x <= s.transform.position.x +5) && 
-			    (h.gameObject.transform.position.x >= s.transform.position.x -5) &&
-			    (h.gameObject.transform.position.z <= s.transform.position.z +5) && 
-			    (h.gameObject.transform.position.z >= s.transform.position.z -5))
+
+		foreach(Homer homer in _homers){
+			if ((homer.gameObject.transform.position.x <= scoringArea.transform.position.x +5) && 
+			    (homer.gameObject.transform.position.x >= scoringArea.transform.position.x -5) &&
+			    (homer.gameObject.transform.position.z <= scoringArea.transform.position.z +5) && 
+			    (homer.gameObject.transform.position.z >= scoringArea.transform.position.z -5))
 				if (stageTime > 0)
 					points++;
 		}
-		
-		if (stageTime > 0) {
+
+		scoreTxt.text="Score : " + points;
+		timerTxt.text="Time Left : " + (int)stageTime;
+
+		/*if (stageTime > 0) {
 			Debug.Log(points);
 			Debug.Log(stageTime);
 		} else { 
 			Debug.Log("Time is over");
 			Debug.Log("Final points = " + points);
-		}
+		}*/
 	}
 }
