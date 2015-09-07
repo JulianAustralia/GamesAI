@@ -5,11 +5,13 @@ using System.Linq;
 
 [RequireComponent(typeof(SteeringController))]
 [RequireComponent(typeof(FS_Homer_Escape))]
+[RequireComponent(typeof(Homer))]
 public class FS_Homer_Wait : FiniteState {
 
 	private SteeringController _steeringController;
 	private Marge _marge;
-	private List<Enemy> _enemies;
+	private Homer _homer;
+	private FS_Homer_Escape _escape;
 	private bool _avoidingMarge;
 	private Transform _waitPoint;
 	
@@ -17,8 +19,8 @@ public class FS_Homer_Wait : FiniteState {
 		
 		_steeringController = GetComponent<SteeringController>();
 		_marge = GameObject.Find("Marge").GetComponent<Marge>();
-
-		_enemies = GameObject.FindGameObjectsWithTag("Enemy").ToList<GameObject>().FindAll((go) => go != _marge.gameObject).ConvertAll<Enemy>((go) => go.GetComponent<Enemy>());
+		_homer = this.GetComponent<Homer>();
+		_escape = this.GetComponent<FS_Homer_Escape>();
 	}
 
 	public void StartWaiting(Transform waitPoint) {
@@ -29,6 +31,12 @@ public class FS_Homer_Wait : FiniteState {
 	
 	public override FiniteState CheckState() {
 
+		if (_homer.GetTooCloseEnemies().Exists((Enemy e) => e.gameObject != _marge.gameObject)) {
+
+			_homer.disabled = false;
+			return _escape;
+		}
+
 		if ((_marge.transform.position - this.transform.position).sqrMagnitude < 9) {
 
 			if (_avoidingMarge == false) {
@@ -37,6 +45,7 @@ public class FS_Homer_Wait : FiniteState {
 				_avoidingMarge = true;
 			}
 		} else {
+
 			if (_avoidingMarge == true) {
 
 				_steeringController.SetBehaviour(new SteerToTarget(this.transform, _waitPoint));

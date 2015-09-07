@@ -93,7 +93,7 @@ public class PathFinder : MonoBehaviour {
 		// Make the corners cross into next box so that paths arn't made tightly around obstacles
 		// This is done with the buffer
 
-		const float buffer = 1f;
+		const float buffer = 1.6f;
 
 		float left = (float) x - buffer;
 		float right = (float) x + buffer;
