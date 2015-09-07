@@ -4,21 +4,18 @@ using System.Collections.Generic;
 
 [RequireComponent(typeof(SteeringController))]
 [RequireComponent(typeof(FS_Marge_ReturnHomer))]
-[RequireComponent(typeof(Marge))]
 public class FS_Marge_CatchHomer : FiniteState {
 
 	public Homer target;
 
 	private SteeringController _steeringController;
 	private FS_Marge_ReturnHomer _return;
-	private Marge _marge;
 	private PathFinder _pathFinder;
 	
 	protected void Awake() {
 		
 		_steeringController = GetComponent<SteeringController>();
 		_return = GetComponent<FS_Marge_ReturnHomer>();
-		_marge = GetComponent<Marge>();
 
 		_pathFinder = GameObject.Find("PathFinder").GetComponent<PathFinder>();
 	}

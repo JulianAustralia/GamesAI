@@ -10,7 +10,7 @@ public class FS_Marge_Wander : FiniteState {
 	private SteeringController _steeringController;
 	private FS_Marge_CatchHomer _catch;
 	private Marge _marge;
-	private List<Vector3> _path;
+	private List<Vector3> _path = null;
 	private float _spawnRadius;
 	private PathFinder _pathFinder;
 	
@@ -56,7 +56,7 @@ public class FS_Marge_Wander : FiniteState {
 			return _catch;
 		}
 
-		if (_path.Count == 0) {
+		if (_path == null || _path.Count == 0) {
 
 			CreateNewPath();
 		}

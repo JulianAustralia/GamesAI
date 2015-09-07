@@ -10,8 +10,9 @@ public class PathNode : IComparable<PathNode> {
 	public List<PathNode> neighbours = new List<PathNode>();
 
 	// For path finding
-	public float cost;
+	public float costTo;
 	public float heuristicCost;
+	public float totalCost;
 	public bool beenChecked;
 	public PathNode previousNode;
 
@@ -25,14 +26,21 @@ public class PathNode : IComparable<PathNode> {
 
 	public void Reset() {
 
-		cost = Mathf.Infinity;
+		costTo = Mathf.Infinity;
+		totalCost = Mathf.Infinity;
 		heuristicCost = 0;
 		beenChecked = false;
 		previousNode = null;
 	}
 	
 	public int CompareTo(PathNode otherNode) {
-		
-		return cost.CompareTo(otherNode.cost);
+
+		if (totalCost >= otherNode.totalCost) {
+
+			return 1;
+		} else {
+
+			return -1;
+		}
 	}
 }

@@ -120,20 +120,24 @@ public class PathFinder : MonoBehaviour {
 		PathNode fromNode = _xzNodeDictionary[(int) Mathf.Round(from.x)][(int) Mathf.Round(from.z)];
 		PathNode toNode = _xzNodeDictionary[(int) Mathf.Round(to.x)][(int) Mathf.Round(to.z)];
 
-		if (fromNode == toNode) return new List<Vector3>();
-
+		if (fromNode.x == toNode.x && fromNode.z == toNode.z) return new List<Vector3>();
+Debug.Log("From " + fromNode.x + "," + fromNode.z + " To " + toNode.x + "," + toNode.z);
 		MinHeap<PathNode> heap = new MinHeap<PathNode>();
 		PathNode node = fromNode;
-		node.cost = 0;
+		node.costTo = 0;
+		node.totalCost = 0;
+		node.heuristicCost = 0;
+		node.beenChecked = true;
+		node.previousNode = null;
 
 		while (node != toNode) {
 
 			node.neighbours.ForEach(
 				(PathNode neighbour) => {
 
-					float newCost = node.cost + 1;
+					float newCost = node.costTo + 1;
 
-					if (neighbour.beenChecked == false || newCost < neighbour.cost) {
+					if (neighbour.beenChecked == false || newCost < neighbour.costTo) {
 
 						if (neighbour.beenChecked == false) {
 
@@ -141,7 +145,8 @@ public class PathFinder : MonoBehaviour {
 							neighbour.beenChecked = true;
 						}
 
-						neighbour.cost = newCost;
+						neighbour.costTo = newCost;
+						neighbour.totalCost = neighbour.costTo + neighbour.heuristicCost;
 						neighbour.previousNode = node;
 						heap.Add(neighbour);
 					}
@@ -187,12 +192,7 @@ public class PathFinder : MonoBehaviour {
 	
 	public bool ValidPosition(Vector3 v) {
 		
-		return ValidPosition(v.x, v.z);
-	}
-
-	public bool ValidPosition(float x, float z) {
-
-		return ValidPosition(Mathf.Round(x), Mathf.Round(z));
+		return ValidPosition((int) v.x, (int) v.z);
 	}
 
 	public bool ValidPosition(int x, int z) {
