@@ -38,19 +38,10 @@ public class PathFinder : MonoBehaviour {
 			_PathNodeBuilder builder = coords.Pop();
 			PathNode newNode = builder.newPathNode;
 
-			if (Mathf.Min(newNode.x, newNode.z) < -100 || Mathf.Max(newNode.x, newNode.z) > 100) {
-
-				GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
-				cube.transform.localScale = new Vector3(1f, 20f, 1f);
-				cube.transform.position = new Vector3((float) newNode.x, 10f, (float) newNode.z);
-
-				continue;
-			}
-
 			if (_collision(newNode.x, newNode.z)) {
 
-				GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
-				cube.transform.position = new Vector3((float) newNode.x, .5f, (float) newNode.z);
+				//GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+				//cube.transform.position = new Vector3((float) newNode.x, .5f, (float) newNode.z);
 
 				continue;
 			}
@@ -99,10 +90,15 @@ public class PathFinder : MonoBehaviour {
 
 		const float y = .5f;
 
-		float left = (float) x - .5f;
-		float right = (float) x + .5f;
-		float back = (float) z - .5f;
-		float front = (float) z + .5f;
+		// Make the corners cross into next box so that paths arn't made tightly around obstacles
+		// This is done with the buffer
+
+		const float buffer = 1f;
+
+		float left = (float) x - buffer;
+		float right = (float) x + buffer;
+		float back = (float) z - buffer;
+		float front = (float) z + buffer;
 
 		Vector3 backLeft = new Vector3(left, y, back);
 		Vector3 backRight = new Vector3(right, y, back);
@@ -117,8 +113,8 @@ public class PathFinder : MonoBehaviour {
 	
 	public List<Vector3> FindPath(Vector3 from, Vector3 to) {
 
-		PathNode fromNode = _xzNodeDictionary[(int) Mathf.Round(from.x)][(int) Mathf.Round(from.z)];
-		PathNode toNode = _xzNodeDictionary[(int) Mathf.Round(to.x)][(int) Mathf.Round(to.z)];
+		PathNode fromNode = getPathNodeFromFloats(from.x, from.z);
+		PathNode toNode = getPathNodeFromFloats(to.x, to.z);
 
 		if (fromNode.x == toNode.x && fromNode.z == toNode.z) return new List<Vector3>();
 //Debug.Log("From " + fromNode.x + "," + fromNode.z + " To " + toNode.x + "," + toNode.z);
@@ -173,6 +169,53 @@ public class PathFinder : MonoBehaviour {
 		_resetNodes();
 
 		return resultingList;
+	}
+
+	// The nodes could be at the border of a collision, so if they don't exist then test all the squares around it
+	private PathNode getPathNodeFromFloats(float fx, float fz) {
+		
+		int ix = (int) Mathf.Round(fx);
+		int iz = (int) Mathf.Round(fz);
+		int x;
+		int z;
+		
+		x = ix;
+		z = iz;
+		if (_xzNodeDictionary.ContainsKey(x) && _xzNodeDictionary[x].ContainsKey(z)) return _xzNodeDictionary[x][z];
+		
+		x = ix - 1;
+		z = iz;
+		if (_xzNodeDictionary.ContainsKey(x) && _xzNodeDictionary[x].ContainsKey(z)) return _xzNodeDictionary[x][z];
+		
+		x = ix + 1;
+		z = iz;
+		if (_xzNodeDictionary.ContainsKey(x) && _xzNodeDictionary[x].ContainsKey(z)) return _xzNodeDictionary[x][z];
+		
+		x = ix;
+		z = iz - 1;
+		if (_xzNodeDictionary.ContainsKey(x) && _xzNodeDictionary[x].ContainsKey(z)) return _xzNodeDictionary[x][z];
+		
+		x = ix;
+		z = iz + 1;
+		if (_xzNodeDictionary.ContainsKey(x) && _xzNodeDictionary[x].ContainsKey(z)) return _xzNodeDictionary[x][z];
+		
+		x = ix - 1;
+		z = iz - 1;
+		if (_xzNodeDictionary.ContainsKey(x) && _xzNodeDictionary[x].ContainsKey(z)) return _xzNodeDictionary[x][z];
+		
+		x = ix - 1;
+		z = iz + 1;
+		if (_xzNodeDictionary.ContainsKey(x) && _xzNodeDictionary[x].ContainsKey(z)) return _xzNodeDictionary[x][z];
+		
+		x = ix + 1;
+		z = iz - 1;
+		if (_xzNodeDictionary.ContainsKey(x) && _xzNodeDictionary[x].ContainsKey(z)) return _xzNodeDictionary[x][z];
+		
+		x = ix + 1;
+		z = iz + 1;
+		if (_xzNodeDictionary.ContainsKey(x) && _xzNodeDictionary[x].ContainsKey(z)) return _xzNodeDictionary[x][z];
+		
+		return null;
 	}
 	
 	private float _heuristic(PathNode location, PathNode goal) {

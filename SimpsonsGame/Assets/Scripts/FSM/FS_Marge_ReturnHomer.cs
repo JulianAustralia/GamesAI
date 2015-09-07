@@ -8,7 +8,7 @@ public class FS_Marge_ReturnHomer : FiniteState {
 
 	private SteeringController _steeringController;
 	private FS_Marge_Wander _wander;
-	private Vector3 _dropPoint;
+	private Transform _dropPoint;
 	private PathFinder _pathFinder;
 	private List<Vector3> _path;
 	private Homer _caughtHomer;
@@ -17,7 +17,7 @@ public class FS_Marge_ReturnHomer : FiniteState {
 		
 		_steeringController = GetComponent<SteeringController>();
 		_wander = GetComponent<FS_Marge_Wander>();
-		_dropPoint = GameObject.Find("MargeDropPoint").transform.position;
+		_dropPoint = GameObject.Find("MargeDropPoint").transform;
 		_pathFinder = GameObject.Find("PathFinder").GetComponent<PathFinder>();
 	}
 
@@ -28,7 +28,7 @@ public class FS_Marge_ReturnHomer : FiniteState {
 
 		_path = _pathFinder.FindPath(
 			this.gameObject.transform.position,
-			_dropPoint
+			_dropPoint.position
 		);
 
 		_steeringController.SetBehaviour(new SteerAlongPath(this.gameObject.transform, _path));
@@ -38,7 +38,7 @@ public class FS_Marge_ReturnHomer : FiniteState {
 
 		if (_path.Count == 0) {
 
-			// TODO Change Homer's state to wait
+			_caughtHomer.SetWaiting(_dropPoint);
 
 			return _wander;
 		}
