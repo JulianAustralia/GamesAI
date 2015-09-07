@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
+[RequireComponent(typeof(FiniteStateMachine))]
 [RequireComponent(typeof(FS_Homer_Wander))]
 [RequireComponent(typeof(FS_Homer_Flock))]
 [RequireComponent(typeof(FS_Homer_Escape))]
@@ -14,6 +15,24 @@ public class Homer : MonoBehaviour {
 
 	public List<Homer> otherHomers;
 	public List<Enemy> enemies;
+
+	public bool disabled = false;
+
+	private FiniteStateMachine _FSM;
+	private FS_Homer_Follow _FSFollow;
+
+	protected void Awake() {
+
+		_FSM = GetComponent<FiniteStateMachine>();
+		_FSFollow = GetComponent<FS_Homer_Follow>();
+	}
+
+	public void SetCaught(GameObject capturer) {
+
+		_FSFollow.StartFollowing(capturer.transform);
+		_FSM.currentState = _FSFollow;
+		disabled = true;
+	}
 
 	public bool HomerTooClose() {
 

@@ -11,6 +11,7 @@ public class FS_Marge_ReturnHomer : FiniteState {
 	private Vector3 _dropPoint;
 	private PathFinder _pathFinder;
 	private List<Vector3> _path;
+	private Homer _caughtHomer;
 	
 	protected void Awake() {
 		
@@ -22,7 +23,8 @@ public class FS_Marge_ReturnHomer : FiniteState {
 
 	public void CreateNewPath(Homer homer) {
 
-		// TODO Change Homer's state to follow
+		_caughtHomer = homer;
+		homer.SetCaught(this.gameObject);
 
 		_path = _pathFinder.FindPath(
 			this.gameObject.transform.position,
@@ -40,8 +42,11 @@ public class FS_Marge_ReturnHomer : FiniteState {
 
 			return _wander;
 		}
-		
-		_steeringController.Steer();
+
+		if ((_caughtHomer.transform.position - this.transform.position).sqrMagnitude < 9) {
+
+			_steeringController.Steer ();
+		}
 		
 		return this;
 	}

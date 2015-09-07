@@ -121,7 +121,7 @@ public class PathFinder : MonoBehaviour {
 		PathNode toNode = _xzNodeDictionary[(int) Mathf.Round(to.x)][(int) Mathf.Round(to.z)];
 
 		if (fromNode.x == toNode.x && fromNode.z == toNode.z) return new List<Vector3>();
-Debug.Log("From " + fromNode.x + "," + fromNode.z + " To " + toNode.x + "," + toNode.z);
+//Debug.Log("From " + fromNode.x + "," + fromNode.z + " To " + toNode.x + "," + toNode.z);
 		MinHeap<PathNode> heap = new MinHeap<PathNode>();
 		PathNode node = fromNode;
 		node.costTo = 0;

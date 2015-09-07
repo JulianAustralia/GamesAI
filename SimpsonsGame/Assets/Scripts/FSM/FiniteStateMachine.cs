@@ -4,16 +4,15 @@ using System.Collections;
 public class FiniteStateMachine : MonoBehaviour {
 	
 	public FiniteState initialState;
-
-	private FiniteState _currentState;
+	public FiniteState currentState;
 
 	protected void Awake () {
 	
-		_currentState = initialState;
+		currentState = initialState;
 	}
 
 	void Update () {
 	
-		_currentState = _currentState.CheckState();
+		currentState = currentState.CheckState();
 	}
 }

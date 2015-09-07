@@ -22,19 +22,25 @@ public class FS_Marge_CatchHomer : FiniteState {
 	
 	public override FiniteState CheckState() {
 
-		List<Vector3> path = _pathFinder.FindPath(
-			this.gameObject.transform.position,
-			target.gameObject.transform.position
-		);
+		float sqrMag = (target.transform.position - this.transform.position).sqrMagnitude;
 
-		if (path.Count == 0) {
+		if (sqrMag < 4) {
 
 			_return.CreateNewPath(target);
 
 			return _return;
-		}
+		} else if (sqrMag < 9) {
 
-		_steeringController.SetBehaviour(new SteerAlongPath(this.gameObject.transform, path));
+			_steeringController.SetBehaviour(new SteerToTarget(this.transform, target.transform));
+		} else {
+
+			List<Vector3> path = _pathFinder.FindPath (
+				this.transform.position,
+				target.transform.position// TODO try to move ahead of homer homervelocitynormalized * distancebetweenhomerandmarge / margespeed
+			);
+
+			_steeringController.SetBehaviour(new SteerAlongPath(this.gameObject.transform, path));
+		}
 		
 		_steeringController.Steer();
 		
