@@ -2,6 +2,12 @@
 using System.Collections;
 using System.Collections.Generic;
 
+[RequireComponent(typeof(FiniteStateMachine))]
+[RequireComponent(typeof(FS_Homer_Wander))]
+[RequireComponent(typeof(FS_Homer_Flock))]
+[RequireComponent(typeof(FS_Homer_Escape))]
+[RequireComponent(typeof(FS_Homer_Follow))]
+[RequireComponent(typeof(FS_Homer_Wait))]
 public class Homer : MonoBehaviour {
 
 	public float distFlock;
@@ -10,6 +16,32 @@ public class Homer : MonoBehaviour {
 
 	public List<Homer> otherHomers;
 	public List<Enemy> enemies;
+
+	public bool disabled = false;
+
+	private FiniteStateMachine _FSM;
+	private FS_Homer_Follow _FSFollow;
+	private FS_Homer_Wait _FSFWait;
+
+	protected void Awake() {
+
+		_FSM = GetComponent<FiniteStateMachine>();
+		_FSFollow = GetComponent<FS_Homer_Follow>();
+		_FSFWait = GetComponent<FS_Homer_Wait>();
+	}
+
+	public void SetCaught(GameObject capturer) {
+
+		_FSFollow.StartFollowing(capturer.transform);
+		_FSM.currentState = _FSFollow;
+		disabled = true;
+	}
+
+	public void SetWaiting(Transform waitPoint) {
+
+		_FSFWait.StartWaiting(waitPoint);
+		_FSM.currentState = _FSFWait;
+	}
 
 	public bool HomerTooClose() {
 

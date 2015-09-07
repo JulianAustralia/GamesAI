@@ -3,21 +3,23 @@ using System.Collections;
 using System.Collections.Generic;
 
 [RequireComponent(typeof(SteeringController))]
-[RequireComponent(typeof(Homer))]
 public class FS_Homer_Follow : FiniteState {
-	
-	private SteeringController _steer;
-	private Homer _homer;
+
+	private SteeringController _steeringController;
 	
 	protected void Awake() {
 		
-		_steer = GetComponent<SteeringController>();
-		_homer = GetComponent<Homer>();
+		_steeringController = GetComponent<SteeringController>();
+	}
+
+	public void StartFollowing(Transform target) {
+
+		_steeringController.SetBehaviour(new SteerToTarget(this.transform, target.transform));
 	}
 	
 	public override FiniteState CheckState() {
 		
-		// TODO
+		_steeringController.Steer();
 		
 		return this;
 	}

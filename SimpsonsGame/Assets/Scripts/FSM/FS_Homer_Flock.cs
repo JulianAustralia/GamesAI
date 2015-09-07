@@ -25,7 +25,7 @@ public class FS_Homer_Flock : FiniteState {
 		
 		if (_homer.EnemyTooClose()) return _escape;
 
-		List<Homer> homersInFlockingRange = _homer.GetHomersCloseEnoughToFlock();
+		List<Homer> homersInFlockingRange = _homer.GetHomersCloseEnoughToFlock().FindAll((Homer h) => !h.disabled);
 
 		if (homersInFlockingRange.Count == 0) return _wander;
 
