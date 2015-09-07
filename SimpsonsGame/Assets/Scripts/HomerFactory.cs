@@ -11,6 +11,7 @@ public class HomerFactory : MonoBehaviour {
 	private List<Homer> _homers;
 
 	public float stageTime = 120;
+	private int second = 1000;
 	public int points = 0;
 
 	public GameObject scoringArea;
@@ -77,13 +78,17 @@ public class HomerFactory : MonoBehaviour {
 		if (stageTime > 0)
 			stageTime -= Time.deltaTime;
 
-		foreach(Homer homer in _homers){
-			if ((homer.gameObject.transform.position.x <= scoringArea.transform.position.x +5) && 
-			    (homer.gameObject.transform.position.x >= scoringArea.transform.position.x -5) &&
-			    (homer.gameObject.transform.position.z <= scoringArea.transform.position.z +5) && 
-			    (homer.gameObject.transform.position.z >= scoringArea.transform.position.z -5))
-				if (stageTime > 0)
-					points++;
+		if (second > stageTime) {
+			second = (int)stageTime;
+
+			foreach(Homer homer in _homers){
+				if ((homer.gameObject.transform.position.x <= scoringArea.transform.position.x +5) && 
+				    (homer.gameObject.transform.position.x >= scoringArea.transform.position.x -5) &&
+				    (homer.gameObject.transform.position.z <= scoringArea.transform.position.z +5) && 
+				    (homer.gameObject.transform.position.z >= scoringArea.transform.position.z -5))
+					if (stageTime > 0)
+						points++;
+			}
 		}
 
 		scoreTxt.text="Score : " + points;
