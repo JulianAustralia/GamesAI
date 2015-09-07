@@ -158,7 +158,7 @@ public class PathFinder : MonoBehaviour {
 
 		List<Vector3> resultingList = new List<Vector3>();
 
-		while (node) {
+		while (node != null) {
 
 			resultingList.Insert(0, new Vector3(node.x, 0, node.z));
 
@@ -183,5 +183,20 @@ public class PathFinder : MonoBehaviour {
 	private void _resetNodes() {
 
 		_nodes.ForEach((PathNode pn) => pn.Reset());
+	}
+	
+	public bool ValidPosition(Vector3 v) {
+		
+		return ValidPosition(v.x, v.z);
+	}
+
+	public bool ValidPosition(float x, float z) {
+
+		return ValidPosition(Mathf.Round(x), Mathf.Round(z));
+	}
+
+	public bool ValidPosition(int x, int z) {
+
+		return _xzNodeDictionary.ContainsKey (x) && _xzNodeDictionary[x].ContainsKey(z);
 	}
 }

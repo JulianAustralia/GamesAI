@@ -3,24 +3,48 @@ using System.Collections;
 using System.Collections.Generic;
 
 [RequireComponent(typeof(SteeringController))]
-[RequireComponent(typeof(FS_Marge_FindHomer))]
-[RequireComponent(typeof(Enemy))]
+[RequireComponent(typeof(FS_Marge_Wander))]
+[RequireComponent(typeof(Marge))]
 public class FS_Marge_ReturnHomer : FiniteState {
-	
+
 	private SteeringController _steeringController;
-	private FS_Marge_FindHomer _find;
-	private Enemy _marge;
+	private FS_Marge_Wander _wander;
+	private Marge _marge;
+	private Vector3 _dropPoint;
+	private PathFinder _pathFinder;
+	private List<Vector3> _path;
 	
 	protected void Awake() {
 		
 		_steeringController = GetComponent<SteeringController>();
-		_find = GetComponent<FS_Marge_FindHomer>();
-		_marge = GetComponent<Enemy>();
+		_wander = GetComponent<FS_Marge_Wander>();
+		_marge = GetComponent<Marge>();
+		_dropPoint = GameObject.Find("MargeDropPoint").transform.position;
+		_pathFinder = GameObject.Find("PathFinder").GetComponent<PathFinder>();
+	}
+
+	public void CreateNewPath(Homer homer) {
+
+		// TODO Change Homer's state to follow
+
+		_path = _pathFinder.FindPath(
+			this.gameObject.transform.position,
+			_dropPoint
+		);
+
+		_steeringController.SetBehaviour(new SteerAlongPath(this.gameObject.transform, _path));
 	}
 	
 	public override FiniteState CheckState() {
+
+		if (_path.Count == 0) {
+
+			// TODO Change Homer's state to wait
+
+			return _wander;
+		}
 		
-		// TODO
+		_steeringController.Steer();
 		
 		return this;
 	}

@@ -6,8 +6,7 @@ using System.Linq;
 public class HomerFactory : MonoBehaviour {
 
 	public int numberOfHomers;
-
-	private List<Homer> _homers;
+	public List<Homer> homers;
 
 	void Start() {
 	
@@ -18,7 +17,7 @@ public class HomerFactory : MonoBehaviour {
 		// Have a buffer of half (position will be centered at max) a Homer width between the edge of the dome and the max spawn position
 		float spawnRadius = Mathf.Min(dome.transform.localScale.x / 2f, dome.transform.localScale.z / 2f) - 2 * Mathf.Max(homer.transform.localScale.x, homer.transform.localScale.z);
 
-		_homers = new List<Homer>(numberOfHomers);
+		homers = new List<Homer>(numberOfHomers);
 
 		for (int i = 0; i < numberOfHomers; ++i) {
 
@@ -39,7 +38,7 @@ public class HomerFactory : MonoBehaviour {
 			euler.y = UnityEngine.Random.Range(0f, 360f);
 			newHomer.transform.eulerAngles = euler;
 
-			_homers.Add(newHomer.GetComponent<Homer>());
+			homers.Add(newHomer.GetComponent<Homer>());
 		}
 		
 		// We could generate one less homer and randomly position this one
@@ -49,12 +48,12 @@ public class HomerFactory : MonoBehaviour {
 
 		for (int i = 0; i < numberOfHomers; ++i) {
 
-			List<Homer> otherHomers = new List<Homer>(_homers);
+			List<Homer> otherHomers = new List<Homer>(homers);
 
 			otherHomers.RemoveAt(i);
 
-			_homers[i].otherHomers = otherHomers;
-			_homers[i].enemies = enemies;
+			homers[i].otherHomers = otherHomers;
+			homers[i].enemies = enemies;
 		}
 	}
 }

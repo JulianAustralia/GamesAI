@@ -2,6 +2,10 @@
 using System.Collections;
 using System.Collections.Generic;
 
+[RequireComponent(typeof(FS_Homer_Wander))]
+[RequireComponent(typeof(FS_Homer_Flock))]
+[RequireComponent(typeof(FS_Homer_Escape))]
+[RequireComponent(typeof(FS_Homer_Follow))]
 public class Homer : MonoBehaviour {
 
 	public float distFlock;
