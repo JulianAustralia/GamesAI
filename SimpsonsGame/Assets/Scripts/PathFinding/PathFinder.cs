@@ -97,8 +97,6 @@ public class PathFinder : MonoBehaviour {
 
 	private bool _collision(int x, int z) {
 
-		Vector3 toFrontRight = new Vector3(1, 0, 1);
-		Vector3 toFrontLeft = new Vector3(-1, 0, 1);
 		const float y = .5f;
 
 		float left = (float) x - .5f;
@@ -109,9 +107,81 @@ public class PathFinder : MonoBehaviour {
 		Vector3 backLeft = new Vector3(left, y, back);
 		Vector3 backRight = new Vector3(right, y, back);
 		Vector3 frontLeft = new Vector3(left, y, front);
+		Vector3 frontRight = new Vector3(right, y, front);
 
 		return Physics.Raycast(backLeft, Vector3.right, 1, _buildingMask) || Physics.Raycast(frontLeft, Vector3.right, 1, _buildingMask) ||
+			Physics.Raycast(backRight, Vector3.left, 1, _buildingMask) || Physics.Raycast(frontRight, Vector3.left, 1, _buildingMask) ||
 			Physics.Raycast(backLeft, Vector3.forward, 1, _buildingMask) || Physics.Raycast(backRight, Vector3.forward, 1, _buildingMask) ||
-			Physics.Raycast(backLeft, toFrontRight, Mathf.Sqrt(2), _buildingMask) || Physics.Raycast(backRight, toFrontLeft, Mathf.Sqrt(2), _buildingMask);
+			Physics.Raycast(frontLeft, Vector3.back, 1, _buildingMask) || Physics.Raycast(frontRight, Vector3.back, 1, _buildingMask);
+	}
+	
+	public List<Vector3> FindPath(Vector3 from, Vector3 to) {
+
+		PathNode fromNode = _xzNodeDictionary[(int) Mathf.Round(from.x)][(int) Mathf.Round(from.z)];
+		PathNode toNode = _xzNodeDictionary[(int) Mathf.Round(to.x)][(int) Mathf.Round(to.z)];
+
+		if (fromNode == toNode) return new List<Vector3>();
+
+		MinHeap<PathNode> heap = new MinHeap<PathNode>();
+		PathNode node = fromNode;
+		node.cost = 0;
+
+		while (node != toNode) {
+
+			node.neighbours.ForEach(
+				(PathNode neighbour) => {
+
+					float newCost = node.cost + 1;
+
+					if (neighbour.beenChecked == false || newCost < neighbour.cost) {
+
+						if (neighbour.beenChecked == false) {
+
+							neighbour.heuristicCost = _heuristic(neighbour, toNode);
+							neighbour.beenChecked = true;
+						}
+
+						neighbour.cost = newCost;
+						neighbour.previousNode = node;
+						heap.Add(neighbour);
+					}
+				}
+			);
+
+			if (heap.Count == 0) {
+
+				return new List<Vector3>();
+			}
+
+			node = heap.ExtractDominating();
+		}
+
+		List<Vector3> resultingList = new List<Vector3>();
+
+		while (node) {
+
+			resultingList.Insert(0, new Vector3(node.x, 0, node.z));
+
+			node = node.previousNode;
+		}
+
+		_resetNodes();
+
+		return resultingList;
+	}
+	
+	private float _heuristic(PathNode location, PathNode goal) {
+		
+		return _manhattan(location, goal);
+	}
+	
+	private float _manhattan(PathNode location, PathNode goal) {
+		
+		return Mathf.Abs(location.x - goal.x) + Mathf.Abs(location.z - goal.z);
+	}
+
+	private void _resetNodes() {
+
+		_nodes.ForEach((PathNode pn) => pn.Reset());
 	}
 }
