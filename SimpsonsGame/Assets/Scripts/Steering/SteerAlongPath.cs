@@ -14,8 +14,15 @@ public class SteerAlongPath : SteeringBehaviour {
 	
 	public override Vector3 GetSteering() {
 		
-		// TODO
+		if (path.Count == 0) return Vector3.zero;
 
-		return Vector3.zero;
+		while ((path[0] - self.transform.position).sqrMagnitude <= 1) {
+
+			path.RemoveAt(0);
+
+			if (path.Count == 0) return Vector3.zero;
+		}
+
+		return (path[0] - self.transform.position).normalized;
 	}
 }

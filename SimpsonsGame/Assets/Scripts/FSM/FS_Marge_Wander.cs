@@ -56,6 +56,11 @@ public class FS_Marge_Wander : FiniteState {
 			return _catch;
 		}
 
+		if (_path.Count == 0) {
+
+			CreateNewPath();
+		}
+
 		_steeringController.SetBehaviour(new SteerAlongPath(this.gameObject.transform, _path));
 		
 		_steeringController.Steer();

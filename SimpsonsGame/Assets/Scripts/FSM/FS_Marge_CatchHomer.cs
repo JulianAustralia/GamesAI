@@ -25,7 +25,7 @@ public class FS_Marge_CatchHomer : FiniteState {
 	
 	public override FiniteState CheckState() {
 
-		List<Vector3> path = _pathFinder.FindPath (
+		List<Vector3> path = _pathFinder.FindPath(
 			this.gameObject.transform.position,
 			target.gameObject.transform.position
 		);
