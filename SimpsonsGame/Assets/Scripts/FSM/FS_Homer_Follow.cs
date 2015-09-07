@@ -11,7 +11,7 @@ public class FS_Homer_Follow : FiniteState {
 	
 	protected void Awake() {
 		
-		_steeringController = GetComponent<SteeringController>();
+		_steer = GetComponent<SteeringController>();
 		_homer = GetComponent<Homer>();
 	}
 	
