@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 
 public class PathFinder : MonoBehaviour {
 	
@@ -9,22 +8,7 @@ public class PathFinder : MonoBehaviour {
 	private Dictionary<int, Dictionary<int, PathNode>> _xzNodeDictionary = new Dictionary<int, Dictionary<int, PathNode>>();
 
 	private int _buildingLayer;
-	private bool _colliding = false;
-	private GameObject _cube;
-
-	private class _Cube : MonoBehaviour {
-
-		public PathFinder pf;
-
-		void OnTriggerEnter(Collider other) {
-			Debug.Log(LayerMask.LayerToName(other.gameObject.layer));
-			Debug.Log(other.gameObject.tag);
-			if (other.gameObject.layer == pf._buildingLayer) {
-
-				pf._colliding = true;
-			}
-		}
-	}
+	private int _buildingMask;
 
 	private class _PathNodeBuilder {
 		public PathNode parent;
@@ -40,26 +24,8 @@ public class PathFinder : MonoBehaviour {
 	void Start () {
 
 		_buildingLayer = LayerMask.NameToLayer("Building");
+		_buildingMask = 1 << _buildingLayer;
 
-		_cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
-		_cube.AddComponent<_Cube>();
-		_cube.GetComponent<_Cube>().pf = this;
-
-		BoxCollider bc = _cube.GetComponent<BoxCollider>();
-		bc.isTrigger = true;
-
-		List<GameObject> buildingsWithCollisions = FindObjectsOfType<GameObject>().ToList<GameObject>().FindAll(
-			(g) => g.layer == _buildingLayer && g.GetComponent<Collider>() != null && g.GetComponent<Collider>().enabled
-		);
-
-		buildingsWithCollisions.ForEach (
-			(g) => {
-
-				g.AddComponent<Rigidbody>();
-				g.GetComponent<Rigidbody>().isKinematic = true;
-			}
-		);
-	
 		Stack<_PathNodeBuilder> coords = new Stack<_PathNodeBuilder>();
 
 		// Assume there are no obstacles at origin
@@ -115,24 +81,31 @@ public class PathFinder : MonoBehaviour {
 			
 			_nodes.Add(newNode);
 
-			// Using Von-Neuman neighbour rules (top, right, bottom, left (no diagonals))
+			// Using Von-Neuman neighbour rules (top, bottom, left, right (no diagonals))
 			coords.Push(new _PathNodeBuilder(newNode, new PathNode(newNode.x - 1, newNode.z)));
 			coords.Push(new _PathNodeBuilder(newNode, new PathNode(newNode.x + 1, newNode.z)));
 			coords.Push(new _PathNodeBuilder(newNode, new PathNode(newNode.x, newNode.z - 1)));
 			coords.Push(new _PathNodeBuilder(newNode, new PathNode(newNode.x, newNode.z + 1)));
 		}
-
-		buildingsWithCollisions.ForEach (
-			(GameObject g) => Destroy(g.GetComponent<Rigidbody>())
-		);
 	}
 
 	private bool _collision(int x, int z) {
 
-		_colliding = false;
+		Vector3 toFrontRight = new Vector3(1, 0, 1);
+		Vector3 toFrontLeft = new Vector3(-1, 0, 1);
+		const float y = .5f;
 
-		_cube.transform.position = new Vector3((float) x, .5f, (float) z);
-		Debug.Log("_collision " + x + " " + z + " " + _colliding);
-		return _colliding;
+		float left = (float) x - .5f;
+		float right = (float) x + .5f;
+		float back = (float) z - .5f;
+		float front = (float) z + .5f;
+
+		Vector3 backLeft = new Vector3(left, y, back);
+		Vector3 backRight = new Vector3(right, y, back);
+		Vector3 frontLeft = new Vector3(left, y, front);
+
+		return Physics.Raycast(backLeft, Vector3.right, 1, _buildingMask) || Physics.Raycast(frontLeft, Vector3.right, 1, _buildingMask) ||
+			Physics.Raycast(backLeft, Vector3.forward, 1, _buildingMask) || Physics.Raycast(backRight, Vector3.forward, 1, _buildingMask) ||
+			Physics.Raycast(backLeft, toFrontRight, Mathf.Sqrt(2), _buildingMask) || Physics.Raycast(backRight, toFrontLeft, Mathf.Sqrt(2), _buildingMask);
 	}
 }
