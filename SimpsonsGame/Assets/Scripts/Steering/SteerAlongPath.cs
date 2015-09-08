@@ -2,7 +2,9 @@ using UnityEngine;
 using System.Collections.Generic;
 
 public class SteerAlongPath : SteeringBehaviour {
-	
+
+	public const float distanceTouchPoint = 2f;
+
 	public Transform self;
 	public List<Vector3> path;
 	
@@ -19,7 +21,7 @@ public class SteerAlongPath : SteeringBehaviour {
 		Vector3 next;
 
 		// Manually creating vector because we want to use our current Y coordinate
-		while ((next = new Vector3(path[0].x - self.transform.position.x, self.transform.position.y, path[0].z - self.transform.position.z)).sqrMagnitude <= 4) {
+		while ((next = new Vector3(path[0].x - self.transform.position.x, self.transform.position.y, path[0].z - self.transform.position.z)).sqrMagnitude <= distanceTouchPoint * distanceTouchPoint) {
 			//Debug.Log("To " + path[path.Count - 1].x + " " + path[path.Count - 1].z + " Done " + path[0].x + " " + path[0].z);
 			path.RemoveAt(0);
 
