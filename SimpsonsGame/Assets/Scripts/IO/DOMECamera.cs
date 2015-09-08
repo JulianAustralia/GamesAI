@@ -29,6 +29,16 @@ public class DOMECamera : MonoBehaviour {
 		float dRotationHorizontal = 0;
 		float dRotationVertical = 0;
 		float dScroll = Input.GetAxis("Mouse ScrollWheel");
+		
+		if (Input.GetKey(KeyCode.E)) {
+			
+			dScroll += 3 * Time.deltaTime;
+		}
+
+		if (Input.GetKey(KeyCode.Q)) {
+			
+			dScroll -= 3 * Time.deltaTime;
+		}
 
 		if (Input.GetKey(KeyCode.W)) {
 			
