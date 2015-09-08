@@ -126,7 +126,7 @@ public class PathFinder : MonoBehaviour {
 		PathNode fromNode = getPathNodeFromFloats(from.x, from.z);
 		PathNode toNode = getPathNodeFromFloats(to.x, to.z);
 
-		if (fromNode.x == toNode.x && fromNode.z == toNode.z) return new List<Vector3>();
+		if (fromNode == null || toNode == null || (fromNode.x == toNode.x && fromNode.z == toNode.z)) return new List<Vector3>();
 //Debug.Log("From " + fromNode.x + "," + fromNode.z + " To " + toNode.x + "," + toNode.z);
 		MinHeap<PathNode> heap = new MinHeap<PathNode>();
 		PathNode node = fromNode;
