@@ -7,7 +7,6 @@ public class PathFinder : MonoBehaviour {
 	private List<PathNode> _nodes = new List<PathNode>();
 	private Dictionary<int, Dictionary<int, PathNode>> _xzNodeDictionary = new Dictionary<int, Dictionary<int, PathNode>>();
 
-	private int _buildingLayer;
 	private int _buildingMask;
 
 	private class _PathNodeBuilder {
@@ -23,8 +22,7 @@ public class PathFinder : MonoBehaviour {
 
 	void Start () {
 
-		_buildingLayer = LayerMask.NameToLayer("Building");
-		_buildingMask = 1 << _buildingLayer;
+		_buildingMask = 1 << LayerMask.NameToLayer("Building");
 
 		Stack<_PathNodeBuilder> coords = new Stack<_PathNodeBuilder>();
 
