@@ -46,12 +46,25 @@ public class FS_Marge_CatchHomer : FiniteState {
 				target.transform.position// TODO try to move ahead of homer homervelocitynormalized * distancebetweenhomerandmarge / margespeed
 			);
 
-			_steeringController.SetBehaviours(
-				new List<SteeringBehaviour>() {
-					new SteerAvoidBuildings(this.transform),
-					new SteerAlongPath(this.transform, path)
-				}
-			);
+			// If is possible Marge is in a position where a path cannot be determined.
+			// If this happens move Marge a little bit and try again
+			if (path.Count > 0) {
+
+				_steeringController.SetBehaviours(
+					new List<SteeringBehaviour>() {
+						new SteerAvoidBuildings(this.transform),
+						new SteerAlongPath(this.transform, path)
+					}
+				);
+			} else {
+
+				_steeringController.SetBehaviours(
+					new List<SteeringBehaviour>() {
+						new SteerAvoidBuildings(this.transform),
+						new SteerWanderXZ(this.transform)
+					}
+				);
+			}
 		}
 		
 		_steeringController.Steer();

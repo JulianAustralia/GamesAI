@@ -57,16 +57,24 @@ public class FS_Marge_Wander : FiniteState {
 		}
 
 		if (_path == null || _path.Count == 0) {
+			
+			// If is possible Marge is in a position where a path cannot be determined.
+			// If this happens move Marge a little bit and try again
+			_steeringController.SetBehaviours (
+				new List<SteeringBehaviour> () {
+					new SteerAvoidBuildings(this.transform),
+					new SteerWanderXZ(this.transform)
+				}
+			);
+		} else {
 
-			CreateNewPath();
+			_steeringController.SetBehaviours(
+				new List<SteeringBehaviour>() {
+					new SteerAvoidBuildings(this.transform),
+					new SteerAlongPath(this.gameObject.transform, _path)
+				}
+			);
 		}
-
-		_steeringController.SetBehaviours(
-			new List<SteeringBehaviour>() {
-				new SteerAvoidBuildings(this.transform),
-				new SteerAlongPath(this.gameObject.transform, _path)
-			}
-		);
 		
 		_steeringController.Steer();
 		
