@@ -41,14 +41,24 @@ public class FS_Homer_Wait : FiniteState {
 
 			if (_avoidingMarge == false) {
 
-				_steeringController.SetBehaviour(new SteerFromTarget(this.transform, _marge.transform));
+				_steeringController.SetBehaviours(
+					new List<SteeringBehaviour>() {
+						new SteerAvoidBuildings(this.transform),
+						new SteerFromTarget(this.transform, _marge.transform)
+					}
+				);
 				_avoidingMarge = true;
 			}
 		} else {
 
 			if (_avoidingMarge == true) {
 
-				_steeringController.SetBehaviour(new SteerToTarget(this.transform, _waitPoint));
+				_steeringController.SetBehaviours(
+					new List<SteeringBehaviour>() {
+						new SteerAvoidBuildings(this.transform),
+						new SteerToTarget(this.transform, _waitPoint)
+					}
+				);
 				_avoidingMarge = false;
 			}
 		}

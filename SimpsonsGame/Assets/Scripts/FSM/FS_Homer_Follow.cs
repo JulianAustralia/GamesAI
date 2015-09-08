@@ -14,7 +14,12 @@ public class FS_Homer_Follow : FiniteState {
 
 	public void StartFollowing(Transform target) {
 
-		_steeringController.SetBehaviour(new SteerToTarget(this.transform, target.transform));
+		_steeringController.SetBehaviours(
+			new List<SteeringBehaviour>() {
+				new SteerAvoidBuildings(this.transform),
+				new SteerToTarget(this.transform, target.transform)
+			}
+		);
 	}
 	
 	public override FiniteState CheckState() {

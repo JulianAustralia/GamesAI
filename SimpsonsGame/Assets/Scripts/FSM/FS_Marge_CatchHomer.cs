@@ -6,6 +6,8 @@ using System.Collections.Generic;
 [RequireComponent(typeof(FS_Marge_ReturnHomer))]
 public class FS_Marge_CatchHomer : FiniteState {
 
+	public const float distanceCatchHomer = 2f;
+	public const float distanceToSteerToHomer = 3f;
 	public Homer target;
 
 	private SteeringController _steeringController;
@@ -24,14 +26,19 @@ public class FS_Marge_CatchHomer : FiniteState {
 
 		float sqrMag = (target.transform.position - this.transform.position).sqrMagnitude;
 
-		if (sqrMag < 4) {
+		if (sqrMag < distanceCatchHomer * distanceCatchHomer) {
 
 			_return.CreateNewPath(target);
 
 			return _return;
-		} else if (sqrMag < 9) {
+		} else if (sqrMag < distanceToSteerToHomer * distanceToSteerToHomer) {
 
-			_steeringController.SetBehaviour(new SteerToTarget(this.transform, target.transform));
+			_steeringController.SetBehaviours(
+				new List<SteeringBehaviour>() {
+					new SteerAvoidBuildings(this.transform),
+					new SteerToTarget(this.transform, target.transform)
+				}
+			);
 		} else {
 
 			List<Vector3> path = _pathFinder.FindPath (
@@ -39,7 +46,12 @@ public class FS_Marge_CatchHomer : FiniteState {
 				target.transform.position// TODO try to move ahead of homer homervelocitynormalized * distancebetweenhomerandmarge / margespeed
 			);
 
-			_steeringController.SetBehaviour(new SteerAlongPath(this.gameObject.transform, path));
+			_steeringController.SetBehaviours(
+				new List<SteeringBehaviour>() {
+					new SteerAvoidBuildings(this.transform),
+					new SteerAlongPath(this.transform, path)
+				}
+			);
 		}
 		
 		_steeringController.Steer();

@@ -30,6 +30,8 @@ public class FS_Homer_Escape : FiniteState {
 			)
 		);
 
+		_steeringController.AddBehaviours(new SteerAvoidBuildings(this.transform));
+
 		_steeringController.Steer();
 		
 		return this;

@@ -27,7 +27,12 @@ public class FS_Homer_Wander : FiniteState {
 
 		if (_homer.HomerCloseEnoughToFlock()) return _flock;
 
-		_steeringController.SetBehaviour(new SteerWanderXZ(this.gameObject.transform));
+		_steeringController.SetBehaviours(
+			new List<SteeringBehaviour>() {
+				new SteerAvoidBuildings(this.transform),
+				new SteerWanderXZ(this.gameObject.transform)
+			}
+		);
 
 		_steeringController.Steer();
 

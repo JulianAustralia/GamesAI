@@ -41,6 +41,8 @@ public class FS_Homer_Flock : FiniteState {
 			)
 		);
 
+		_steeringController.AddBehaviours(new SteerAvoidBuildings(this.transform));
+
 		_steeringController.Steer();
 
 		return this;

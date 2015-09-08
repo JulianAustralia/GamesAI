@@ -31,7 +31,12 @@ public class FS_Marge_ReturnHomer : FiniteState {
 			_dropPoint.position
 		);
 
-		_steeringController.SetBehaviour(new SteerAlongPath(this.gameObject.transform, _path));
+		_steeringController.SetBehaviours(
+			new List<SteeringBehaviour>() {
+				new SteerAvoidBuildings(this.transform),
+				new SteerAlongPath(this.gameObject.transform, _path)
+			}
+		);
 	}
 	
 	public override FiniteState CheckState() {
