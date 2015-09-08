@@ -17,11 +17,16 @@ public class HomerFactory : MonoBehaviour {
 
 	public GameObject scoreUI;
 	public GameObject timerUI;
+	public GameObject endGamePanel;
+	public GameObject finalScoreUI;
 
 	private Text scoreTxt;
 	private Text timerTxt;
+	private Text finalScore;
 
 	void Start() {
+
+		endGamePanel.SetActive (false);
 	
 		List<Enemy> enemies = GameObject.FindGameObjectsWithTag("Enemy").ToList<GameObject>().ConvertAll<Enemy>((go) => go.GetComponent<Enemy>());
 		GameObject homer = GameObject.Find("Homer");
@@ -71,11 +76,16 @@ public class HomerFactory : MonoBehaviour {
 
 		scoreTxt = scoreUI.GetComponent<Text>();
 		timerTxt = timerUI.GetComponent<Text>();
+		finalScore = finalScoreUI.GetComponent<Text>();
 	}
 	
 	void Update () {
-		if (stageTime > 0)
+		if (stageTime > 0) {
 			stageTime -= Time.deltaTime;
+		} else {
+			endGamePanel.SetActive (true);
+			finalScore.text="Your score: " + points;
+		}
 
 		if (second > stageTime) {
 			second = (int)stageTime;
@@ -90,8 +100,8 @@ public class HomerFactory : MonoBehaviour {
 			}
 		}
 
-		scoreTxt.text="Score : " + points;
-		timerTxt.text="Time Left : " + (int)stageTime;
+		scoreTxt.text="Score: " + points;
+		timerTxt.text="Time Left: " + (int)stageTime;
 
 		/*if (stageTime > 0) {
 			Debug.Log(points);
