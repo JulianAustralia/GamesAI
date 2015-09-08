@@ -28,6 +28,9 @@ public class FS_Marge_Wander : FiniteState {
 
 	public void CreateNewPath() {
 
+		const int maxAttempts = 10;
+		int attempts = 0;
+
 		do {
 			float angle = UnityEngine.Random.Range(0, 2 * Mathf.PI);
 			float radius = UnityEngine.Random.Range(0, _spawnRadius);
@@ -42,7 +45,7 @@ public class FS_Marge_Wander : FiniteState {
 			}
 
 			_path = _pathFinder.FindPath(this.gameObject.transform.position, to);
-		} while (_path == null || _path.Count == 0);
+		} while (++attempts < maxAttempts && (_path == null || _path.Count == 0));
 	}
 	
 	public override FiniteState CheckState() {
@@ -58,23 +61,31 @@ public class FS_Marge_Wander : FiniteState {
 
 		if (_path == null || _path.Count == 0) {
 			
+			CreateNewPath();
+
 			// If is possible Marge is in a position where a path cannot be determined.
 			// If this happens move Marge a little bit and try again
-			_steeringController.SetBehaviours (
-				new List<SteeringBehaviour> () {
-					new SteerAvoidBuildings(this.transform),
-					new SteerWanderXZ(this.transform)
-				}
-			);
-		} else {
+			if (_path == null || _path.Count == 0) {
+			
+				_steeringController.SetBehaviours (
+					new List<SteeringBehaviour> () {
+						new SteerAvoidBuildings(this.transform),
+						new SteerWanderXZ(this.transform)
+					}
+				);
 
-			_steeringController.SetBehaviours(
-				new List<SteeringBehaviour>() {
-					new SteerAvoidBuildings(this.transform),
-					new SteerAlongPath(this.gameObject.transform, _path)
-				}
-			);
+				_steeringController.Steer();
+		
+				return this;
+			}
 		}
+
+		_steeringController.SetBehaviours(
+			new List<SteeringBehaviour>() {
+				new SteerAvoidBuildings(this.transform),
+				new SteerAlongPath(this.gameObject.transform, _path)
+			}
+		);
 		
 		_steeringController.Steer();
 		
