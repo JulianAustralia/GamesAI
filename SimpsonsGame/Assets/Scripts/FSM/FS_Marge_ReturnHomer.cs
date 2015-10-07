@@ -17,7 +17,7 @@ public class FS_Marge_ReturnHomer : FiniteState {
 		
 		_steeringController = GetComponent<SteeringController>();
 		_wander = GetComponent<FS_Marge_Wander>();
-		_dropPoint = GameObject.Find("MargeDropPoint").transform;
+		_dropPoint = GetComponent<Enemy>().zone.transform;
 		_pathFinder = GameObject.Find("PathFinder").GetComponent<PathFinder>();
 	}
 

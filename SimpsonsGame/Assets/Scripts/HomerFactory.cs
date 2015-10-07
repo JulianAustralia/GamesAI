@@ -9,24 +9,24 @@ public class HomerFactory : MonoBehaviour {
 	public int numberOfHomers;
 	public List<Homer> homers;
 
-	public float stageTime = 120;
+	/*public float stageTime = 120;
 	private int second = 1000;
 	public int points = 0;
 
 	public GameObject scoringArea;
 
 	public GameObject scoreUI;
-	public GameObject timerUI;
-	public GameObject endGamePanel;
-	public GameObject finalScoreUI;
+	public GameObject timerUI;*/
+	//public GameObject endGamePanel;
+	/*public GameObject finalScoreUI;
 
 	private Text scoreTxt;
 	private Text timerTxt;
-	private Text finalScore;
+	private Text finalScore;*/
 
 	void Start() {
 
-		endGamePanel.SetActive (false);
+		//	endGamePanel.SetActive(false);
 	
 		List<Enemy> enemies = GameObject.FindGameObjectsWithTag("Enemy").ToList<GameObject>().ConvertAll<Enemy>((go) => go.GetComponent<Enemy>());
 		GameObject homer = GameObject.Find("Homer");
@@ -74,13 +74,13 @@ public class HomerFactory : MonoBehaviour {
 			homers[i].enemies = enemies;
 		}
 
-		scoreTxt = scoreUI.GetComponent<Text>();
-		timerTxt = timerUI.GetComponent<Text>();
-		finalScore = finalScoreUI.GetComponent<Text>();
+		//scoreTxt = scoreUI.GetComponent<Text>();
+		//timerTxt = timerUI.GetComponent<Text>();
+		//finalScore = finalScoreUI.GetComponent<Text>();
 	}
 	
 	void Update () {
-		if (stageTime > 0) {
+		/*if (stageTime > 0) {
 			stageTime -= Time.deltaTime;
 		} else {
 			endGamePanel.SetActive (true);
@@ -101,14 +101,6 @@ public class HomerFactory : MonoBehaviour {
 		}
 
 		scoreTxt.text="Score: " + points;
-		timerTxt.text="Time Left: " + (int)stageTime;
-
-		/*if (stageTime > 0) {
-			Debug.Log(points);
-			Debug.Log(stageTime);
-		} else { 
-			Debug.Log("Time is over");
-			Debug.Log("Final points = " + points);
-		}*/
+		timerTxt.text="Time Left: " + (int)stageTime;*/
 	}
 }
