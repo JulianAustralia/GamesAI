@@ -55,6 +55,9 @@ public class SteeringController : MonoBehaviour {
 			steering += behaviour.GetSteering();
 		}
 
+		// Our game is 2d
+		steering.y = 0;
+
 		_movement.Move(steering);
 	}
 }
