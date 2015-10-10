@@ -30,8 +30,16 @@ public class GameMaster : MonoBehaviour {
 	private void _startGame() {
 
 		_homerFactory.CreateHomers();
+
+		_marge.GetComponent<Marge>().initialise();
+
 		_machines = _homerFactory.homers.ConvertAll<FiniteStateMachine>(h => h.GetComponent<FiniteStateMachine>());
 		_machines.Add(_marge.GetComponent<FiniteStateMachine>());
+
+		_zones.ForEach((SafeZone s) => s.initialise());
+
+		_timePast = 0;
+		_lastUpdate = -updateFrequency;
 		_gameRunning = true;
 	}
 
@@ -48,9 +56,6 @@ public class GameMaster : MonoBehaviour {
 		).ConvertAll<SafeZone>(
 			(go) => go.GetComponent<SafeZone>()
 		);
-		
-		_timePast = 0;
-		_lastUpdate = -updateFrequency;
 
 		_bart = GameObject.Find("Bart");
 		_marge = GameObject.Find("Marge");
@@ -115,10 +120,12 @@ public class GameMaster : MonoBehaviour {
 
 			_gameRunning = false;
 
-			// Get Moes score
-			// Get Burns score
-			// result = max(moes, burns) - abs(moes - burns) / 4
-			_callback(0);
+			int ms = _moe.GetComponent<Enemy>().zone.score;
+			int bs = _burns.GetComponent<Enemy>().zone.score;
+
+			double score = Math.Max(ms, bs) - Math.Abs(ms - bs) / 4;
+
+			_callback(score);
 		} else {
 
 			_machines.ForEach(m => m.UpdateState());

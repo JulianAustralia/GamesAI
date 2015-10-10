@@ -6,9 +6,14 @@ public class FiniteStateMachine : MonoBehaviour {
 	public FiniteState initialState;
 	public FiniteState currentState;
 
+	public void initialise() {
+
+		currentState = initialState;
+	}
+
 	protected void Awake () {
 	
-		currentState = initialState;
+		initialise();
 	}
 
 	public void UpdateState () {

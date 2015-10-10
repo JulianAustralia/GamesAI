@@ -10,6 +10,11 @@ public class Marge : Enemy {
 	public int distToCatchHomer;
 	private HomerFactory _factory;
 
+	public void initialise() {
+
+		GetComponent<FiniteStateMachine>().initialise();
+	}
+
 	protected void Awake() {
 
 		_factory = GameObject.Find("HomerFactory").GetComponent<HomerFactory>();

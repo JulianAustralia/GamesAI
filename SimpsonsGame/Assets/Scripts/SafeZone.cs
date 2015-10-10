@@ -9,36 +9,45 @@ public class SafeZone : MonoBehaviour {
 	public Text scoreText;
 
 	private HomerFactory _factory;
-	private int _score = 0;
 	private float _left;
 	private float _right;
 	private float _back;
 	private float _front;
 
-	void Start () {
+	public int score;
 
-		_factory = GameObject.Find("HomerFactory").GetComponent<HomerFactory>();
-		
-		_left = transform.position.x - transform.localScale.x / 2;
-		_right = transform.position.x + transform.localScale.x / 2;
-		_back = transform.position.z - transform.localScale.z / 2;
-		_front = transform.position.z + transform.localScale.z / 2;
+	public void initialise() {
 
 		Vector3 newPosition = new Vector3(
 			transform.position.x,
 			hunter.transform.position.y,
 			transform.position.z
 		);
-
+		
 		Vector3 newRotation = new Vector3 (
 			-transform.position.x,
 			hunter.transform.position.y,
 			-transform.position.z
 		);
-
+		
 		hunter.transform.position = newPosition;
-
+		
 		hunter.transform.rotation = Quaternion.LookRotation(newRotation);
+
+		score = 0;
+	}
+
+	void Start () {
+
+		_factory = GameObject.Find("HomerFactory").GetComponent<HomerFactory>();
+
+		Vector3 p = transform.position;
+		Vector3 s = transform.localScale;
+
+		_left = p.x - s.x / 2;
+		_right = p.x + s.x / 2;
+		_back = p.z - s.z / 2;
+		_front = p.z + s.z / 2;
 	}
 
 	public void updateScore () {
@@ -51,14 +60,14 @@ public class SafeZone : MonoBehaviour {
 
 				if (x >= _left && x <= _right && z >= _back && z <= _front) {
 
-					++_score;
+					++score;
 				}
 			}
 		);
 
 		if (scoreText != null) {
 
-			scoreText.text = "Score : " + _score;
+			scoreText.text = "Score : " + score;
 		}
 	}
 
