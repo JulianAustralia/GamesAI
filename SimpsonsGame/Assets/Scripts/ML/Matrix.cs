@@ -19,6 +19,7 @@ public class Matrix {
 		_data = new double[_size];
 		
 		for (int row = 0; row < height; ++row) {
+
 			for (int column = 0; column < width; ++column) {
 				
 				_data[row * width + column] = lambda(row, column);

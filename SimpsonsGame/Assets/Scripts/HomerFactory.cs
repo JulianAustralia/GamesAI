@@ -9,24 +9,7 @@ public class HomerFactory : MonoBehaviour {
 	public int numberOfHomers;
 	public List<Homer> homers;
 
-	/*public float stageTime = 120;
-	private int second = 1000;
-	public int points = 0;
-
-	public GameObject scoringArea;
-
-	public GameObject scoreUI;
-	public GameObject timerUI;*/
-	//public GameObject endGamePanel;
-	/*public GameObject finalScoreUI;
-
-	private Text scoreTxt;
-	private Text timerTxt;
-	private Text finalScore;*/
-
-	void Start() {
-
-		//	endGamePanel.SetActive(false);
+	public void CreateHomers() {
 	
 		List<Enemy> enemies = GameObject.FindGameObjectsWithTag("Enemy").ToList<GameObject>().ConvertAll<Enemy>((go) => go.GetComponent<Enemy>());
 		GameObject homer = GameObject.Find("Homer");
@@ -73,34 +56,5 @@ public class HomerFactory : MonoBehaviour {
 			homers[i].otherHomers = otherHomers;
 			homers[i].enemies = enemies;
 		}
-
-		//scoreTxt = scoreUI.GetComponent<Text>();
-		//timerTxt = timerUI.GetComponent<Text>();
-		//finalScore = finalScoreUI.GetComponent<Text>();
-	}
-	
-	void Update () {
-		/*if (stageTime > 0) {
-			stageTime -= Time.deltaTime;
-		} else {
-			endGamePanel.SetActive (true);
-			finalScore.text="Your score: " + points;
-		}
-
-		if (second > stageTime) {
-			second = (int)stageTime;
-
-			foreach(Homer homer in homers){
-				if ((homer.gameObject.transform.position.x <= scoringArea.transform.position.x +5) && 
-				    (homer.gameObject.transform.position.x >= scoringArea.transform.position.x -5) &&
-				    (homer.gameObject.transform.position.z <= scoringArea.transform.position.z +5) && 
-				    (homer.gameObject.transform.position.z >= scoringArea.transform.position.z -5))
-					if (stageTime > 0)
-						points++;
-			}
-		}
-
-		scoreTxt.text="Score: " + points;
-		timerTxt.text="Time Left: " + (int)stageTime;*/
 	}
 }

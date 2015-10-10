@@ -25,7 +25,7 @@ public class EO {
 		double mutateChance,
 		double mutateMaxFactor,
 		int generations,
-		Action<ANNTrainer, Action<ANNTrainer>> train
+		Action<ANNTrainer, Action<double>> train
 	){
 		
 		string timestamp = DateTime.UtcNow.ToString("yyyy_MM_dd_HH_mm_ss_fff");
@@ -70,25 +70,22 @@ public class EO {
 				
 				trained[trained.Count() - 1] = new ANNTrainer(new ANN(layers));
 
-				for (int j = 0; j < populationCount; ++j) {
+				for (int i = 0; i < populationCount; ++i) {
 
-					population[j] = trained[j].nn;
+					population[i] = trained[i].nn;
 				}
 
-				if (gen > 0 && gen % 10 == 0) {
+				System.IO.File.WriteAllText(
+					@"C:\Users\Public\EO\" + timestamp + "generation" + gen + ".txt",
+					String.Join(
+						",\n",
+						population.Select(
+							nn => nn.ToString()
+						).ToArray()
+					)
+				);
 
-					System.IO.File.WriteAllText(
-						@"C:\Users\Public\EO\" + timestamp + "generation" + gen + ".txt",
-						String.Join(
-							",\n",
-							population.Select(
-								nn => nn.ToString()
-							).ToArray()
-						)
-					);
-				}
-
-				if (gen < generations) {
+				if (gen + 1 < generations) {
 
 					trainGeneration(gen + 1);
 				}
@@ -98,13 +95,16 @@ public class EO {
 
 			trainPopulation = (int pop) => {
 
+				ANNTrainer trainer = new ANNTrainer(population[pop]);
+
 				train(
-					new ANNTrainer(population[pop]),
-					(ANNTrainer result) => {
+					trainer,
+					(double score) => {
 
-						trained.Add(result);
+						trainer.score = score;
+						trained.Add(trainer);
 
-						if (pop < populationCount) {
+						if (pop + 1 < populationCount) {
 
 							trainPopulation(pop + 1);
 						} else {
@@ -119,48 +119,6 @@ public class EO {
 		};
 
 		trainGeneration(0);
-		/*
-		for (int i = 0; i < generations; ++i) {
-
-			List<ANNTrainer> trained = new List<ANNTrainer>();
-
-			for (int j = 0; j < populationCount; ++j) {
-
-				trained.Add(train(new ANNTrainer(population[j])));
-			}
-			
-			trained.Sort(
-				(ANNTrainer a, ANNTrainer b) => a.score.CompareTo(b.score)
-			);
-			
-			ANNTrainer best = trained[0];
-			ANNTrainer second = trained[1];
-			
-			this.crossOver(ref best, ref second, crossOverChance);
-			
-			this.mutate(ref best, mutateChance, mutateMaxFactor);
-			this.mutate(ref second, mutateChance, mutateMaxFactor);
-			
-			trained[trained.Count() - 1] = new ANNTrainer(new ANN(layers));
-
-			for (int j = 0; j < populationCount; ++j) {
-
-				population[j] = trained[j].nn;
-			}
-
-			if (i > 0 && i % 10 == 0) {
-
-				System.IO.File.WriteAllText(
-					@"C:\Users\Public\EO\" + timestamp + "generation" + i + ".txt",
-					String.Join(
-						",\n",
-						population.Select(
-							nn => nn.ToString()
-						).ToArray()
-					)
-				);
-			}
-		}*/
 	}
 	
 	private void crossOver(ref ANNTrainer best, ref ANNTrainer second, double crossOverChance) {

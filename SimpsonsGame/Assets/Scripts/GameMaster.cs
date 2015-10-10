@@ -10,18 +10,42 @@ public class GameMaster : MonoBehaviour {
 	public GameObject gameOverPanel;
 	public Text timeText;
 
-	public const float stageTime = 60;
+	public const float stageTime = 6;
 	public const float updateFrequency = 1;
 
-	private EO _eo;
-
+	private HomerFactory _homerFactory;
 	private List<SafeZone> _zones;
 
 	private float _timePast;
 	private float _lastUpdate;
-	private bool _gameRunning = true;
+	private bool _gameRunning = false;
+	private ANNTrainer _nn = null;
+	private Action<double> _callback = null;
 
-	public GameMaster() {
+	private void _startGame() {
+
+		_homerFactory.CreateHomers();
+		_gameRunning = false;
+	}
+
+	public void Start() {
+
+		if (gameOverPanel != null) {
+			
+			gameOverPanel.SetActive(false);
+		}
+		
+		_zones = GameObject.FindGameObjectsWithTag(
+			"ScoreZone"
+			).ToList<GameObject>(
+			).ConvertAll<SafeZone>(
+			(go) => go.GetComponent<SafeZone>()
+			);
+		
+		_timePast = 0;
+		_lastUpdate = -updateFrequency;
+
+		_homerFactory = GameObject.Find("HomerFactory").GetComponent<HomerFactory>();
 
 		const int populationCount = 16;
 		List<int> layers = new List<int>();
@@ -32,13 +56,14 @@ public class GameMaster : MonoBehaviour {
 		const double mutateChance = .3;
 		const double mutateMaxFactor = .4;
 		const int generations = 100;
-		Action<ANNTrainer, Action<ANNTrainer>> train = (ANNTrainer t, Action<ANNTrainer> callback) => {
-
-			callback(t);
+		Action<ANNTrainer, Action<double>> train = (ANNTrainer t, Action<double> callback) => {
+		
+			_nn = t;
+			_callback = callback;
+			_startGame();
 		};
 
-
-		_eo = new EO(
+		new EO(
 			populationCount,
 			layers,
 			crossOverChance,
@@ -49,26 +74,6 @@ public class GameMaster : MonoBehaviour {
 		);
 	}
 
-	// Use this for initialization
-	void Start () {
-
-		if (gameOverPanel != null) {
-
-			gameOverPanel.SetActive (false);
-		}
-
-		_zones = GameObject.FindGameObjectsWithTag(
-			"ScoreZone"
-		).ToList<GameObject>(
-		).ConvertAll<SafeZone>(
-			(go) => go.GetComponent<SafeZone>()
-		);
-
-		_timePast = 0;
-		_lastUpdate = -updateFrequency;
-	}
-	
-	// Update is called once per frame
 	void Update () {
 
 		if (!_gameRunning) return;
@@ -97,6 +102,11 @@ public class GameMaster : MonoBehaviour {
 			}
 
 			_gameRunning = false;
+
+			// Get Moes score
+			// Get Burns score
+			// result = max(moes, burns) - abs(moes - burns) / 4
+			_callback(0);
 		}
 	}
 }
