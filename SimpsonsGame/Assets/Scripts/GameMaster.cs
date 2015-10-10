@@ -10,7 +10,7 @@ public class GameMaster : MonoBehaviour {
 	public GameObject gameOverPanel;
 	public Text timeText;
 
-	public const float stageTime = 120;
+	public const float stageTime = 60;
 	public const float updateFrequency = 1;
 
 	private EO _eo;
@@ -19,6 +19,7 @@ public class GameMaster : MonoBehaviour {
 
 	private float _timePast;
 	private float _lastUpdate;
+	private bool _gameRunning = true;
 
 	public GameMaster() {
 
@@ -31,11 +32,9 @@ public class GameMaster : MonoBehaviour {
 		const double mutateChance = .3;
 		const double mutateMaxFactor = .4;
 		const int generations = 100;
-		Func<ANNTrainer, ANNTrainer> train = (ANNTrainer t) => {
+		Action<ANNTrainer, Action<ANNTrainer>> train = (ANNTrainer t, Action<ANNTrainer> callback) => {
 
-			// TODO
-
-			return t;
+			callback(t);
 		};
 
 
@@ -72,6 +71,8 @@ public class GameMaster : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
+		if (!_gameRunning) return;
+
 		_timePast += Time.deltaTime;
 
 		if (_lastUpdate + updateFrequency <= _timePast) {
@@ -94,6 +95,8 @@ public class GameMaster : MonoBehaviour {
 
 				gameOverPanel.SetActive(true);
 			}
+
+			_gameRunning = false;
 		}
 	}
 }
