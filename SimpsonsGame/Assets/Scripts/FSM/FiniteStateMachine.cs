@@ -11,7 +11,7 @@ public class FiniteStateMachine : MonoBehaviour {
 		currentState = initialState;
 	}
 
-	void Update () {
+	public void UpdateState () {
 	
 		currentState = currentState.CheckState();
 	}

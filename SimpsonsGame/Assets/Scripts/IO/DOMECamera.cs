@@ -86,7 +86,7 @@ public class DOMECamera : MonoBehaviour {
 			radiusSinVertical * Mathf.Sin(horizontalAngle),
 			radius * Mathf.Cos(verticalAngle),
 			radiusSinVertical * Mathf.Cos(horizontalAngle)
-			);
+		);
 		_camera.transform.LookAt(center);
 	}
 }

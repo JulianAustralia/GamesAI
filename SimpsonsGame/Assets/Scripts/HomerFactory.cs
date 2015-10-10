@@ -9,27 +9,54 @@ public class HomerFactory : MonoBehaviour {
 	public int numberOfHomers;
 	public List<Homer> homers;
 
-	public void CreateHomers() {
-	
-		List<Enemy> enemies = GameObject.FindGameObjectsWithTag("Enemy").ToList<GameObject>().ConvertAll<Enemy>((go) => go.GetComponent<Enemy>());
-		GameObject homer = GameObject.Find("Homer");
-		GameObject dome = GameObject.Find("Dome");
+	private List<Enemy> _enemies;
+	private GameObject _original;
+	private float _originalY;
+	private float _spawnRadius;
 
-		// Have a buffer of half (position will be centered at max) a Homer width between the edge of the dome and the max spawn position
-		float spawnRadius = Mathf.Min(dome.transform.localScale.x / 2f, dome.transform.localScale.z / 2f) - 2 * Mathf.Max(homer.transform.localScale.x, homer.transform.localScale.z);
+	private bool _initialized = false;
+
+	private void _initialise() {
+
+		if (_initialized) {
+
+			homers.ForEach(h => GameObject.Destroy(h.gameObject));
+
+			return;
+		}
+
+		_initialized = true;
+
+		_enemies = GameObject.FindGameObjectsWithTag("Enemy").ToList<GameObject>().ConvertAll<Enemy>(e => e.GetComponent<Enemy>());
+
+		_original = GameObject.Find("HomerOriginal");
+
+		_originalY = (float) _original.transform.position.y;
+
+		Vector3 dt = GameObject.Find("Dome").transform.localScale;
+		Vector3 ot = _original.transform.localScale;
+		_spawnRadius = (float) (Mathf.Min(dt.x, dt.z) / 2f - 2 * Mathf.Max(ot.x, ot.z));
+
+		// Move the Homer out of the world
+		_original.transform.position = new Vector3(0, -1000, 0);
+	}
+
+	public void CreateHomers() {
+
+		_initialise();
 
 		homers = new List<Homer>(numberOfHomers);
 
 		for (int i = 0; i < numberOfHomers; ++i) {
 
 			float angle = UnityEngine.Random.Range(0, 2 * Mathf.PI);
-			float radius = UnityEngine.Random.Range(0, spawnRadius);
+			float radius = UnityEngine.Random.Range(0, _spawnRadius);
 
 			GameObject newHomer = (GameObject) Instantiate(
-				homer,
+				_original,
 				new Vector3(
 					Mathf.Sin(angle) * radius,
-					homer.transform.position.y,
+					_originalY,
 					Mathf.Cos(angle) * radius
 				),
 				Quaternion.identity
@@ -41,11 +68,6 @@ public class HomerFactory : MonoBehaviour {
 
 			homers.Add(newHomer.GetComponent<Homer>());
 		}
-		
-		// We could generate one less homer and randomly position this one
-		// But this way is cleaner and this function will only be called once
-		// per game so the performance hit is negligible
-		GameObject.Destroy(homer);
 
 		for (int i = 0; i < numberOfHomers; ++i) {
 
@@ -54,7 +76,7 @@ public class HomerFactory : MonoBehaviour {
 			otherHomers.RemoveAt(i);
 
 			homers[i].otherHomers = otherHomers;
-			homers[i].enemies = enemies;
+			homers[i].enemies = _enemies;
 		}
 	}
 }
