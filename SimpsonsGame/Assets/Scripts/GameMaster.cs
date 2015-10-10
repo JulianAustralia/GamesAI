@@ -85,7 +85,7 @@ public class GameMaster : MonoBehaviour {
 
 		_homerFactory = GameObject.Find("HomerFactory").GetComponent<HomerFactory>();
 
-		const int populationCount = 16;
+		const int populationCount = 8;
 		List<int> layers = new List<int>();
 		layers.Add(25); // Input layer
 		layers.Add(16); // Hidden layer
@@ -110,6 +110,8 @@ public class GameMaster : MonoBehaviour {
 			generations,
 			train
 		);
+
+		Time.timeScale = 10;
 	}
 	
 	private void _swap(ref Vector3 a, ref Vector3 b) {
@@ -158,7 +160,7 @@ public class GameMaster : MonoBehaviour {
 			int ms = _moeZone.score;
 			int bs = _burnsZone.score;
 
-			double score = Math.Max(ms, bs) - Math.Abs(ms - bs) / 4;
+			double score = Math.Max(ms, bs) - Math.Abs(ms - bs) / 4 - _margeZone.score / 2 - _bartZone.score / 2;
 
 			_callback(score);
 		} else {
@@ -192,7 +194,11 @@ public class GameMaster : MonoBehaviour {
 			_homerFactory.homers.ForEach(
 				h => {
 
-					Vector3 mhp = h.transform.position;
+					Vector3 mhp = new Vector3(
+						h.transform.position.x,
+						h.transform.position.y,
+						h.transform.position.z
+					);
 
 					double mdx = mtp.x - mhp.x;
 					double mdz = mtp.z - mhp.z;
@@ -217,7 +223,11 @@ public class GameMaster : MonoBehaviour {
 						_swap(ref mhp, ref moeClosestH3);
 					}
 
-					Vector3 bhp = h.transform.position;
+					Vector3 bhp = new Vector3(
+						h.transform.position.x,
+						h.transform.position.y,
+						h.transform.position.z
+					);
 
 					double bdx = btp.x - bhp.x;
 					double bdz = btp.z - bhp.z;

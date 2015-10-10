@@ -45,7 +45,7 @@ public class ANN {
 
 					double result = 1 / (1 + Mathf.Exp((float)-d));
 
-					return double.IsNaN(result) ? 0 : result;
+					return double.IsNaN(result) ? 0 : d < 0 ? -result : result;
 				}
 			);
 

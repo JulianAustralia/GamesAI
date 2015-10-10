@@ -204,7 +204,7 @@ public class Matrix {
 
 				double sqrt = Mathf.Sqrt((float) sqrd);
 
-				return Double.IsNaN(sqrt) ? 0 : sqrt;
+				return Double.IsNaN(sqrt) ? 0 : r.NextDouble() < .5 ? -sqrt : sqrt;
 			}
 		);
 	}
