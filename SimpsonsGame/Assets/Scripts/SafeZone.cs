@@ -15,6 +15,7 @@ public class SafeZone : MonoBehaviour {
 	private float _front;
 
 	public int score;
+	public int scoreChange;
 
 	public void initialise() {
 
@@ -33,7 +34,8 @@ public class SafeZone : MonoBehaviour {
 		hunter.transform.position = newPosition;
 		
 		hunter.transform.rotation = Quaternion.LookRotation(newRotation);
-
+		
+		scoreChange = 0;
 		score = 0;
 	}
 
@@ -52,6 +54,8 @@ public class SafeZone : MonoBehaviour {
 
 	public void updateScore () {
 
+		scoreChange = 0;
+
 		_factory.homers.ForEach(
 			(Homer h) => {
 
@@ -60,10 +64,12 @@ public class SafeZone : MonoBehaviour {
 
 				if (x >= _left && x <= _right && z >= _back && z <= _front) {
 
-					++score;
+					++scoreChange;
 				}
 			}
 		);
+
+		score += scoreChange;
 
 		if (scoreText != null) {
 

@@ -48,7 +48,7 @@ public class SteeringController : MonoBehaviour {
 	
 	public void Steer() {
 
-		var steering = Vector3.zero;
+		Vector3 steering = Vector3.zero;
 
 		foreach (var behaviour in _steeringBehaviours) {
 

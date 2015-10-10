@@ -55,6 +55,11 @@ public class ANN {
 		return activations;
 	}
 
+	public Matrix getResult(Matrix input) {
+
+		return feedForward(input).Last();
+	}
+
 	public override string ToString () {
 
 		return "ANN, biases:[" +
