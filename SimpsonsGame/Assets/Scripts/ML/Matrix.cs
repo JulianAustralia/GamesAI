@@ -65,7 +65,7 @@ public class Matrix {
 
 	public double getWidth() { return _width; }
 	public double getHeight() { return _height; }
-	public double getValue(int row, int column) { return _data[column * _width + row]; }
+	public double getValue(int row, int column) { return _data[row * _width + column]; }
 
 	public bool sameDimensions(Matrix other) { return _width == other._width && _height == other._height; }
 
