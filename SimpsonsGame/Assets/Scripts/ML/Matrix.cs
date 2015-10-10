@@ -46,7 +46,7 @@ public class Matrix {
 
 	public Matrix dotProduct(Matrix other) {
 
-		return new Matrix (
+		return new Matrix(
 			this._height,
 			other._width,
 			(int row, int column) => {
@@ -55,7 +55,7 @@ public class Matrix {
 
 				for (int i = 0; i < this._width; ++i) {
 
-					sum += this.getValue(row, i) * other.getValue(i, column)
+					sum += this.getValue(row, i) * other.getValue(i, column);
 				}
 
 				return sum;
@@ -71,24 +71,58 @@ public class Matrix {
 
 	public override string ToString () {
 
-		return "[" + Enumerable.Range(0, _height - 1).Select(
-			(row) => "[" + Enumerable.Range(0, _width - 1).Select(
-				(column) => getValue(row, column).ToString()
-			).Join(",") + "]"
-		).Join(",") + "]";
-	}
+		string s = "[";
 
+		for (int row = 0; row < _height; ++row) {
+
+			s += "[";
+
+			for (int column = 0; column < _width; ++column) {
+
+				s += getValue(row, column);
+
+				if (column < _width - 1) {
+
+					s += ",";
+				}
+			}
+
+			s += "]";
+
+			if (row < _height - 1) {
+
+				s += ",";
+			}
+		}
+
+		return s + "]";
+	}
+	
 	public static Matrix operator *(Matrix m1, Matrix m2) {
 		
 		return m1.map(
 			(int row, int column, double value) => value * m2.getValue(row, column)
-		);
+			);
 	}
 	
 	public static Matrix operator *(Matrix m, double d) {
 		
 		return m.map(
 			(double value) => value * d
+			);
+	}
+	
+	public static Matrix operator /(Matrix m1, Matrix m2) {
+		
+		return m1.map(
+			(int row, int column, double value) => value / m2.getValue(row, column)
+		);
+	}
+	
+	public static Matrix operator /(Matrix m, double d) {
+		
+		return m.map(
+			(double value) => value / d
 		);
 	}
 	
@@ -134,7 +168,9 @@ public class Matrix {
 				double uniform1 = r.NextDouble();
 				double uniform2 = r.NextDouble();
 
-				return Mathf.Sqrt(-2 * Math.Log(uniform1)) * Math.Sin (2 * Math.PI * uniform2);
+				double sqrd = -2 * Math.Log(uniform1) * Math.Sin(2 * Math.PI * uniform2);
+
+				return Mathf.Sqrt((float) sqrd);
 			}
 		);
 	}
