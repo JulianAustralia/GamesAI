@@ -3,7 +3,19 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-class ANNTrainer {
+private static Random r = new Random();
+
+private bool chance(double c) {
+
+	return r.NextDouble() <= c;
+}
+
+private double range(double maxmin) {
+
+	return (r.NextDouble() - .5) * 2 * maxmin;
+}
+
+public class ANNTrainer {
 
 	public ANNTrainer(ANN nn) {
 
@@ -62,41 +74,31 @@ public class EO {
 
 	private void crossOver(ref ANNTrainer best, ref ANNTrainer second, double crossOverChance) {
 
-		Random r = new Random();
-
 		ANN bestBiases = best.nn._biases.map(
 			(int row, int column, double b) => {
 
-				bool crossOver = r.NextDouble() <= crossOverChance;
-			 
-				return crossOver ? second.nn._biases.getValue(row, column) : b;
+				return chance(crossOverChance) ? second.nn._biases.getValue(row, column) : b;
 			}
 		);
 
 		ANN bestWeights = best.nn._weights.map (
 			(int row, int column, double w) => {
 			
-				bool crossOver = r.NextDouble() <= crossOverChance;
-			
-				return crossOver ? second.nn._weights.getValue(row, column) : w;
+				return chance(crossOverChance) ? second.nn._weights.getValue(row, column) : w;
 			}
 		);
 
 		ANN secondBiases = second.nn._biases.map(
 			(int row, int column, double b) => {
 
-				bool crossOver = r.NextDouble() <= crossOverChance;
-			 
-				return crossOver ? best.nn._biases.getValue(row, column) : b;
+				return chance(crossOverChance) ? best.nn._biases.getValue(row, column) : b;
 			}
 		);
 
 		ANN secondWeights = second.nn._weights.map (
 			(int row, int column, double w) => {
-			
-				bool crossOver = r.NextDouble() <= crossOverChance;
-				
-				return crossOver ? best.nn._weights.getValue(row, column) : w;
+
+				return chance(crossOverChance) ? best.nn._weights.getValue(row, column) : w;
 			}
 		);
 
@@ -104,5 +106,22 @@ public class EO {
 		best.nn._weights = bestWeights;
 		second.nn._biases = secondBiases;
 		second.nn._weights = secondWeights;
+	}
+
+	private void mutate(ref ANNTrainer trainer, double mutateChance, double mutateMaxFactor) {
+		
+		trainer.nn._biases = trainer.nn._biases.map (
+			(double b) => {
+
+				return chance(mutateChance) ? b + range(mutateMaxFactor) : b;
+			}
+		);
+
+		trainer.nn._wights = trainer.nn._wights.map(
+			(double b) => {
+
+				return chance(mutateChance) ? b + range(mutateMaxFactor) : b;
+			}
+		);
 	}
 }
