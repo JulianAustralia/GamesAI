@@ -170,7 +170,9 @@ public class Matrix {
 
 				double sqrd = -2 * Math.Log(uniform1) * Math.Sin(2 * Math.PI * uniform2);
 
-				return Mathf.Sqrt((float) sqrd);
+				double sqrt = Mathf.Sqrt((float) sqrd);
+
+				return Double.IsNaN(sqrt) ? 0 : sqrt;
 			}
 		);
 	}

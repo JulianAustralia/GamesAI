@@ -74,16 +74,19 @@ public class EO {
 
 				population[j] = trained[j].nn;
 			}
-		
-			System.IO.File.WriteAllText(
-				@"C:\Users\Public\EO\" + timestamp + "generation" + i + ".txt",
-				String.Join(
-					",\n",
-					population.Select(
-						nn => nn.ToString()
-					).ToArray()
-				)
-			);
+
+			if (i > 0 && i % 10 == 0) {
+
+				System.IO.File.WriteAllText(
+					@"C:\Users\Public\EO\" + timestamp + "generation" + i + ".txt",
+					String.Join(
+						",\n",
+						population.Select(
+							nn => nn.ToString()
+						).ToArray()
+					)
+				);
+			}
 		}
 	}
 	

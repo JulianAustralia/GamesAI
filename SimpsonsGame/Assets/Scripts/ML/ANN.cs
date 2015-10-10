@@ -41,7 +41,12 @@ public class ANN {
 				weight.dotProduct(activations.Last()) + biase
 			).map(
 				// sigmoid
-				(d) => 1 / (1 + Mathf.Exp((float)-d))
+				(d) => {
+
+					double result = 1 / (1 + Mathf.Exp((float)-d));
+
+					return double.IsNaN(result) ? 0 : result;
+				}
 			);
 
 			activations.Add(activation);
