@@ -87,7 +87,7 @@ public class GameMaster : MonoBehaviour {
 
 		const int populationCount = 16;
 		List<int> layers = new List<int>();
-		layers.Add(22); // Input layer
+		layers.Add(25); // Input layer
 		layers.Add(16); // Hidden layer
 		layers.Add(2); // Output layer
 		const double crossOverChance = .05;
@@ -260,6 +260,9 @@ public class GameMaster : MonoBehaviour {
 
 			double [] moeInput = {
 				timeRemaing,
+				mtp.x / _width,
+				mtp.z / _depth,
+				mangle.y / 360,
 				homersInMoe,
 				(_moeZone.transform.position.x - mtp.x) / _width,
 				(_moeZone.transform.position.z - mtp.z) / _depth,
@@ -300,6 +303,9 @@ public class GameMaster : MonoBehaviour {
 
 			double [] burnsInput = {
 				timeRemaing,
+				btp.x / _width,
+				btp.z / _depth,
+				bangle.y / 360,
 				homersInBurns,
 				(_burnsZone.transform.position.x - btp.x) / _width,
 				(_burnsZone.transform.position.z - btp.z) / _depth,
