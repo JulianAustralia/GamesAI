@@ -9,6 +9,7 @@ public class HomerFactory : MonoBehaviour {
 	public int numberOfHomers;
 	public List<Homer> homers;
 
+	private int _buildingMask;
 	private List<Enemy> _enemies;
 	private GameObject _original;
 	private float _originalY;
@@ -26,6 +27,8 @@ public class HomerFactory : MonoBehaviour {
 		}
 
 		_initialized = true;
+
+		_buildingMask = 1 << LayerMask.NameToLayer("Building");
 
 		_enemies = GameObject.FindGameObjectsWithTag("Enemy").ToList<GameObject>().ConvertAll<Enemy>(e => e.GetComponent<Enemy>());
 
@@ -49,16 +52,26 @@ public class HomerFactory : MonoBehaviour {
 
 		for (int i = 0; i < numberOfHomers; ++i) {
 
+			do {
+
 			float angle = UnityEngine.Random.Range(0, 2 * Mathf.PI);
 			float radius = UnityEngine.Random.Range(0, _spawnRadius);
 
+			Vector3 position = new Vector3(
+				Mathf.Sin(angle) * radius,
+				_originalY,
+				Mathf.Cos(angle) * radius
+			);
+
+			// Check if Homer's spawn is inside a building
+			if (Physics.Raycast(position, Vector3.up, 50, _buildingMask)) {
+
+				continue;
+			}
+
 			GameObject newHomer = (GameObject) Instantiate(
 				_original,
-				new Vector3(
-					Mathf.Sin(angle) * radius,
-					_originalY,
-					Mathf.Cos(angle) * radius
-				),
+				position,
 				Quaternion.identity
 			);
 
@@ -67,6 +80,10 @@ public class HomerFactory : MonoBehaviour {
 			newHomer.transform.eulerAngles = euler;
 
 			homers.Add(newHomer.GetComponent<Homer>());
+
+			break;
+
+			} while (true);
 		}
 
 		for (int i = 0; i < numberOfHomers; ++i) {
