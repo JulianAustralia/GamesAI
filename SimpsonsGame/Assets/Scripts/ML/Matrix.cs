@@ -1,5 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using System;
 
 public class Matrix {
@@ -66,7 +68,16 @@ public class Matrix {
 	public double getValue(int row, int column) { return _data[column * _width + row]; }
 
 	public bool sameDimensions(Matrix other) { return _width == other._width && _height == other._height; }
-	
+
+	public override string ToString () {
+
+		return "[" + Enumerable.Range(0, _height - 1).Select(
+			(row) => "[" + Enumerable.Range(0, _width - 1).Select(
+				(column) => getValue(row, column).ToString()
+			).Join(",") + "]"
+		).Join(",") + "]";
+	}
+
 	public static Matrix operator *(Matrix m1, Matrix m2) {
 		
 		return m1.map(

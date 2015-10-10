@@ -39,11 +39,20 @@ public class EO {
 		Func<ANNTrainer, ANNTrainer> train
 	){
 
+		string timestamp = DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss.fff", CultureInfo.InvariantCulture);
+
 		List<ANN> population = Enumerable.Range(
 			0,
 			populationCount
 		).Select(
 			(x) => new ANN(layers)
+		);
+
+		System.IO.File.WriteAllText(
+			@"C:\Users\Public\EO\" + timestamp + "generation0.txt",
+			population.Select(
+				(ANN) => ANN.toString()
+			).Join(",\n")
 		);
 
 		for (int i = 0; i < generations; ++i) {
@@ -68,6 +77,13 @@ public class EO {
 
 			population = trained.Select(
 				(ANNTrainer t) => t.nn
+			);
+
+			System.IO.File.WriteAllText(
+				@"C:\Users\Public\EO\" + timestamp + "generation" + i + ".txt",
+				population.Select(
+					(ANN) => ANN.toString()
+				).Join(",\n")
 			);
 		}
 	}

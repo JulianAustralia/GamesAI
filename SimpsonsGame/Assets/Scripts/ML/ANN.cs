@@ -67,4 +67,13 @@ public class ANN {
 
 		return activations;
 	}
+
+	public override string ToString () {
+
+		return "ANN, biases:[" +
+			_biases.Select((m) => m.ToString()).Join(",") +
+			"], weights:[" +
+			_weights.Select((m) => m.ToString()).Join(",") +
+			"]";
+	}
 }
