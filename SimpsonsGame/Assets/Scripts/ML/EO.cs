@@ -58,11 +58,12 @@ public class EO {
 
 			Action populationFinished = () => {
 
-				trained.Sort((a, b) => a.score.CompareTo(b.score));
+				// Biggest to smalest
+				trained.Sort((a, b) => b.score.CompareTo(a.score));
 				
 				ANNTrainer best = trained[0];
 				ANNTrainer second = trained[1];
-				
+
 				this.crossOver(ref best, ref second, crossOverChance);
 				
 				this.mutate(ref best, mutateChance, mutateMaxFactor);

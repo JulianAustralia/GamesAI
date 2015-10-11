@@ -10,7 +10,7 @@ public class GameMaster : MonoBehaviour {
 	public GameObject gameOverPanel;
 	public Text timeText;
 
-	public const float stageTime = 120;
+	public const float stageTime = 30;
 	public const float updateFrequency = 1;
 
 	private double _width;
@@ -87,13 +87,13 @@ public class GameMaster : MonoBehaviour {
 
 		const int populationCount = 8;
 		List<int> layers = new List<int>();
-		layers.Add(25); // Input layer
-		layers.Add(16); // Hidden layer
+		layers.Add(5); // Input layer
+		layers.Add(6); // Hidden layer
 		layers.Add(2); // Output layer
-		const double crossOverChance = .05;
-		const double mutateChance = .3;
-		const double mutateMaxFactor = .4;
-		const int generations = 10000;
+		const double crossOverChance = .02;
+		const double mutateChance = .10;
+		const double mutateMaxFactor = .2;
+		const int generations = 1000;
 		Action<ANNTrainer, Action<double>> train = (ANNTrainer t, Action<double> callback) => {
 		
 			_nn = t;
@@ -111,7 +111,7 @@ public class GameMaster : MonoBehaviour {
 			train
 		);
 
-		Time.timeScale = 1;
+		Time.timeScale = 10;
 	}
 	
 	private void _swap(ref Vector3 a, ref Vector3 b) {
@@ -157,12 +157,17 @@ public class GameMaster : MonoBehaviour {
 
 			_gameRunning = false;
 
-			int ms = _moeZone.score;
+			/*int ms = _moeZone.score;
 			int bs = _burnsZone.score;
 
 			double score = Math.Max(ms, bs) - Math.Abs(ms - bs);// / 4 - _margeZone.score / 2 - _bartZone.score / 2;
 
-			_callback(score);
+			_callback(score);*/
+
+			Vector3 mp = _moe.transform.position;
+			Vector3 bp = _burns.transform.position;
+
+			_callback(1 / ((mp.x * mp.x + mp.z * mp.z) + (bp.x * bp.x + bp.z * bp.z)));
 		} else {
 
 			_machines.ForEach(m => m.UpdateState());
@@ -237,19 +242,19 @@ public class GameMaster : MonoBehaviour {
 					if (bd < burnsClosestH1D) {
 
 						_swap(ref bd, ref burnsClosestH1D);
-						_swap(ref mhp, ref burnsClosestH1);
+						_swap(ref bhp, ref burnsClosestH1);
 					}
 
 					if (bd < burnsClosestH2D) {
 
 						_swap(ref bd, ref burnsClosestH2D);
-						_swap(ref mhp, ref burnsClosestH2);
+						_swap(ref bhp, ref burnsClosestH2);
 					}
 
 					if (bd < burnsClosestH3D) {
 
 						_swap(ref bd, ref burnsClosestH3D);
-						_swap(ref mhp, ref burnsClosestH3);
+						_swap(ref bhp, ref burnsClosestH3);
 					}
 				}
 			);
@@ -269,10 +274,10 @@ public class GameMaster : MonoBehaviour {
 			_moe.transform.eulerAngles = mangle;
 
 			double [] moeInput = {
-				timeRemaing,
+				//timeRemaing,
 				mtp.x / _width,
 				mtp.z / _depth,
-				mangle.y / 360,
+				/*mangle.y / 360,
 				homersInMoe,
 				(_moeZone.transform.position.x - mtp.x) / _width,
 				(_moeZone.transform.position.z - mtp.z) / _depth,
@@ -290,7 +295,7 @@ public class GameMaster : MonoBehaviour {
 				(moeClosestH2.x - mtp.x) / _width,
 				(moeClosestH2.z - mtp.z) / _depth,
 				(moeClosestH3.x - mtp.x) / _width,
-				(moeClosestH3.z - mtp.z) / _depth,
+				(moeClosestH3.z - mtp.z) / _depth,*/
 				moeObstacleFront ? 1 : 0,
 				moeObstacleFrontLeft ? 1 : 0,
 				moeObstacleFrontRight ? 1 : 0
@@ -309,13 +314,13 @@ public class GameMaster : MonoBehaviour {
 			_burns.transform.eulerAngles = bangle;
 			bool burnsObstacleFrontRight = Physics.Raycast(btp, _burns.transform.forward, raycastLength, _buildingMask);
 			bangle.y += angleOffset;
-			_moe.transform.eulerAngles = bangle;
+			_burns.transform.eulerAngles = bangle;
 
 			double [] burnsInput = {
-				timeRemaing,
+				//timeRemaing,
 				btp.x / _width,
 				btp.z / _depth,
-				bangle.y / 360,
+				/*bangle.y / 360,
 				homersInBurns,
 				(_burnsZone.transform.position.x - btp.x) / _width,
 				(_burnsZone.transform.position.z - btp.z) / _depth,
@@ -333,7 +338,7 @@ public class GameMaster : MonoBehaviour {
 				(burnsClosestH2.x - btp.x) / _width,
 				(burnsClosestH2.z - btp.z) / _depth,
 				(burnsClosestH3.x - btp.x) / _width,
-				(burnsClosestH3.z - btp.z) / _depth,
+				(burnsClosestH3.z - btp.z) / _depth,*/
 				burnsObstacleFront ? 1 : 0,
 				burnsObstacleFrontLeft ? 1 : 0,
 				burnsObstacleFrontRight ? 1 : 0

@@ -11,6 +11,8 @@ public class Matrix {
 	private int _size;
 	private double[] _data;
 
+	private static System.Random _r = new System.Random();
+
 	private void _testCases() {
 
 		if (true) {
@@ -265,24 +267,10 @@ public class Matrix {
 
 	public static Matrix RandomDist(int width, int height) {
 
-		System.Random r = new System.Random();
-
 		return new Matrix(
 			width,
 			height,
-			(x, y) => {
-
-				// A Box-Muller transfrom for a quick distribution
-
-				double uniform1 = r.NextDouble();
-				double uniform2 = r.NextDouble();
-
-				double sqrd = -2 * Math.Log(uniform1) * Math.Sin(2 * Math.PI * uniform2);
-
-				double sqrt = Mathf.Sqrt((float) sqrd);
-
-				return Double.IsNaN(sqrt) ? 0 : r.NextDouble() < .5 ? -sqrt : sqrt;
-			}
+			(x, y) => Matrix._r.NextDouble() * 2 - 1
 		);
 	}
 

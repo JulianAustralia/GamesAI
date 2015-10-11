@@ -281,7 +281,7 @@ public class PathFinder : MonoBehaviour {
 	public PathNode GetRandomPosition() {
 
 		int index = Mathf.FloorToInt(_nodes.Count * (float) _r.NextDouble());
-		Debug.Log(index + " " + _nodes.Count);
+
 		return _nodes[index];
 	}
 }
