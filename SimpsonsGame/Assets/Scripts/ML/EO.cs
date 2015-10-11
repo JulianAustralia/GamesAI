@@ -52,7 +52,7 @@ public class EO {
 		Action<int> trainGeneration;
 
 		trainGeneration = (int gen) => {
-
+			Debug.Log("Training Generation " + gen);
 			List<ANNTrainer> trained = new List<ANNTrainer>();
 
 			Action populationFinished = () => {

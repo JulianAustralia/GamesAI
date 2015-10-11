@@ -11,7 +11,6 @@ public class FS_Marge_Wander : FiniteState {
 	private FS_Marge_CatchHomer _catch;
 	private Marge _marge;
 	private List<Vector3> _path = null;
-	private float _spawnRadius;
 	private PathFinder _pathFinder;
 	
 	protected void Awake() {
@@ -20,32 +19,21 @@ public class FS_Marge_Wander : FiniteState {
 		_catch = GetComponent<FS_Marge_CatchHomer>();
 		_marge = GetComponent<Marge>();
 
-		GameObject dome = GameObject.Find("Dome");
-		_spawnRadius = Mathf.Min(dome.transform.localScale.x / 2f, dome.transform.localScale.z / 2f) - 2;
-
 		_pathFinder = GameObject.Find("PathFinder").GetComponent<PathFinder>();
 	}
 
 	public void CreateNewPath() {
 
-		const int maxAttempts = 10;
-		int attempts = 0;
+		PathNode positionPN = _pathFinder.GetRandomPosition();
 
-		do {
-			float angle = UnityEngine.Random.Range(0, 2 * Mathf.PI);
-			float radius = UnityEngine.Random.Range(0, _spawnRadius);
-
-			Vector3 to = new Vector3(Mathf.Sin(angle) * radius, 0, Mathf.Cos(angle) * radius);
-
-			if (_pathFinder.ValidPosition(to) == false) {
-
-				_path = null;
-
-				continue;
-			}
-
-			_path = _pathFinder.FindPath(this.gameObject.transform.position, to);
-		} while (++attempts < maxAttempts && (_path == null || _path.Count == 0));
+		_path = _pathFinder.FindPath(
+			transform.position,
+			new Vector3(
+				positionPN.x,
+				transform.position.y,
+				positionPN.z
+			)
+		);
 	}
 	
 	public override FiniteState CheckState() {

@@ -9,7 +9,6 @@ public class HomerFactory : MonoBehaviour {
 	public int numberOfHomers;
 	public List<Homer> homers;
 
-	private int _buildingMask;
 	private List<Enemy> _enemies;
 	private GameObject _original;
 	private float _originalY;
@@ -29,17 +28,11 @@ public class HomerFactory : MonoBehaviour {
 
 		_initialized = true;
 
-		_buildingMask = 1 << LayerMask.NameToLayer("Building");
-
 		_enemies = GameObject.FindGameObjectsWithTag("Enemy").ToList<GameObject>().ConvertAll<Enemy>(e => e.GetComponent<Enemy>());
 
 		_original = GameObject.Find("HomerOriginal");
 
 		_originalY = (float) _original.transform.position.y;
-
-		Vector3 dt = GameObject.Find("Dome").transform.localScale;
-		Vector3 ot = _original.transform.localScale;
-		_spawnRadius = (float) (Mathf.Min(dt.x, dt.z) / 2f - 2 * Mathf.Max(ot.x, ot.z));
 
 		_pathFinder = GameObject.Find("PathFinder").GetComponent<PathFinder>();
 

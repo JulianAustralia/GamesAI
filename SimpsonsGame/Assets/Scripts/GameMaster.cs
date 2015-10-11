@@ -10,11 +10,9 @@ public class GameMaster : MonoBehaviour {
 	public GameObject gameOverPanel;
 	public Text timeText;
 
-	public const float stageTime = 30;
+	public const float stageTime = 150;
 	public const float updateFrequency = 1;
 
-	private double _width;
-	private double _depth;
 	private int _buildingMask;
 	private GameObject _bart;
 	private SafeZone _bartZone;
@@ -68,10 +66,6 @@ public class GameMaster : MonoBehaviour {
 
 		_buildingMask = 1 << LayerMask.NameToLayer("Building");
 
-		Vector3 dt = GameObject.Find("Dome").transform.localScale;
-		_width = dt.x;
-		_depth = dt.z;
-
 		_bart = GameObject.Find("Bart");
 		_bartZone = _bart.GetComponent<Enemy>().zone;
 		_marge = GameObject.Find("Marge");
@@ -85,13 +79,13 @@ public class GameMaster : MonoBehaviour {
 
 		_homerFactory = GameObject.Find("HomerFactory").GetComponent<HomerFactory>();
 
-		const int populationCount = 8;
+		const int populationCount = 10;
 		List<int> layers = new List<int>();
-		layers.Add(2); // Input layer
-		layers.Add(2); // Hidden layer
+		layers.Add(25); // Input layer
+		layers.Add(18); // Hidden layer
 		layers.Add(2); // Output layer
-		const double mutateChance = .10;
-		const double mutateMaxFactor = .2;
+		const double mutateChance = .3;
+		const double mutateMaxFactor = .4;
 		const int generations = 1000;
 		Action<ANNTrainer, Action<double>> train = (ANNTrainer t, Action<double> callback) => {
 		
@@ -109,7 +103,7 @@ public class GameMaster : MonoBehaviour {
 			train
 		);
 
-		Time.timeScale = 10;
+		Time.timeScale = 6;
 	}
 	
 	private void _swap(ref Vector3 a, ref Vector3 b) {
@@ -155,32 +149,23 @@ public class GameMaster : MonoBehaviour {
 
 			_gameRunning = false;
 
-			/*int ms = _moeZone.score;
+			int ms = _moeZone.score;
 			int bs = _burnsZone.score;
 
 			double score = Math.Max(ms, bs) - Math.Abs(ms - bs);// / 4 - _margeZone.score / 2 - _bartZone.score / 2;
 
-			_callback(score);*/
-
-			Vector3 mp = _moe.transform.position;
-			Vector3 bp = _burns.transform.position;
-
-			double mdist = (mp.x * mp.x + mp.z * mp.z);
-			double bdist = (bp.x * bp.x + bp.z * bp.z);
-
-			double dist = Math.Sqrt(mdist) + Math.Sqrt(bdist);
-
-			_callback(dist > 0 ? 1 / dist : dist);
+			_callback(score);
 		} else {
+
+			_bart.transform.position = new Vector3(200, 2, 200);
 
 			_machines.ForEach(m => m.UpdateState());
 
-			/*double timeRemaing = (double) (stageTime - _timePast) / (double) stageTime;
-			double numHomers = (double) _homerFactory.numberOfHomers;
-			double homersInBart = (double) _bartZone.scoreChange / numHomers;
-			double homersInMarge = (double) _margeZone.scoreChange / numHomers;
-			double homersInMoe = (double) _moeZone.scoreChange / numHomers;
-			double homersInBurns = (double) _burnsZone.scoreChange / numHomers;
+			double timeRemaing = (double) (stageTime - _timePast);
+			double homersInBart = (double) _bartZone.scoreChange;
+			double homersInMarge = (double) _margeZone.scoreChange;
+			double homersInMoe = (double) _moeZone.scoreChange;
+			double homersInBurns = (double) _burnsZone.scoreChange;
 
 			double moeClosestH1D = Mathf.Infinity;
 			Vector3 moeClosestH1 = Vector3.zero;
@@ -278,27 +263,27 @@ public class GameMaster : MonoBehaviour {
 
 			double [] moeInput = {
 				timeRemaing,
-				mtp.x / _width,
-				mtp.z / _depth,
-				mangle.y / 360,
+				mtp.x,
+				mtp.z,
+				mangle.y,
 				homersInMoe,
-				(_moeZone.transform.position.x - mtp.x) / _width,
-				(_moeZone.transform.position.z - mtp.z) / _depth,
+				(_moeZone.transform.position.x - mtp.x),
+				(_moeZone.transform.position.z - mtp.z),
 				homersInMarge,
-				(_margeZone.transform.position.x - mtp.x) / _width,
-				(_margeZone.transform.position.z - mtp.z) / _depth,
+				(_margeZone.transform.position.x - mtp.x),
+				(_margeZone.transform.position.z - mtp.z),
 				homersInBurns,
-				(_burnsZone.transform.position.x - mtp.x) / _width,
-				(_burnsZone.transform.position.z - mtp.z) / _depth,
+				(_burnsZone.transform.position.x - mtp.x),
+				(_burnsZone.transform.position.z - mtp.z),
 				homersInBart,
-				(_bartZone.transform.position.x - mtp.x) / _width,
-				(_bartZone.transform.position.z - mtp.z) / _depth,
-				(moeClosestH1.x - mtp.x) / _width,
-				(moeClosestH1.z - mtp.z) / _depth,
-				(moeClosestH2.x - mtp.x) / _width,
-				(moeClosestH2.z - mtp.z) / _depth,
-				(moeClosestH3.x - mtp.x) / _width,
-				(moeClosestH3.z - mtp.z) / _depth,
+				(_bartZone.transform.position.x - mtp.x),
+				(_bartZone.transform.position.z - mtp.z),
+				moeClosestH1.x - mtp.x,
+				moeClosestH1.z - mtp.z,
+				moeClosestH2.x - mtp.x,
+				moeClosestH2.z - mtp.z,
+				moeClosestH3.x - mtp.x,
+				moeClosestH3.z - mtp.z,
 				moeObstacleFront ? 1 : 0,
 				moeObstacleFrontLeft ? 1 : 0,
 				moeObstacleFrontRight ? 1 : 0
@@ -317,42 +302,30 @@ public class GameMaster : MonoBehaviour {
 
 			double [] burnsInput = {
 				timeRemaing,
-				btp.x / _width,
-				btp.z / _depth,
-				bangle.y / 360,
+				btp.x,
+				btp.z,
+				bangle.y,
 				homersInBurns,
-				(_burnsZone.transform.position.x - btp.x) / _width,
-				(_burnsZone.transform.position.z - btp.z) / _depth,
+				_burnsZone.transform.position.x - btp.x,
+				_burnsZone.transform.position.z - btp.z,
 				homersInBart,
-				(_bartZone.transform.position.x - btp.x) / _width,
-				(_bartZone.transform.position.z - btp.z) / _depth,
+				_bartZone.transform.position.x - btp.x,
+				_bartZone.transform.position.z - btp.z,
 				homersInMoe,
-				(_moeZone.transform.position.x - btp.x) / _width,
-				(_moeZone.transform.position.z - btp.z) / _depth,
+				_moeZone.transform.position.x - btp.x,
+				_moeZone.transform.position.z - btp.z,
 				homersInMarge,
-				(_margeZone.transform.position.x - btp.x) / _width,
-				(_margeZone.transform.position.z - btp.z) / _depth,
-				(burnsClosestH1.x - btp.x) / _width,
-				(burnsClosestH1.z - btp.z) / _depth,
-				(burnsClosestH2.x - btp.x) / _width,
-				(burnsClosestH2.z - btp.z) / _depth,
-				(burnsClosestH3.x - btp.x) / _width,
-				(burnsClosestH3.z - btp.z) / _depth,
+				_margeZone.transform.position.x - btp.x,
+				_margeZone.transform.position.z - btp.z,
+				burnsClosestH1.x - btp.x,
+				burnsClosestH1.z - btp.z,
+				burnsClosestH2.x - btp.x,
+				burnsClosestH2.z - btp.z,
+				burnsClosestH3.x - btp.x,
+				burnsClosestH3.z - btp.z,
 				burnsObstacleFront ? 1 : 0,
 				burnsObstacleFrontLeft ? 1 : 0,
 				burnsObstacleFrontRight ? 1 : 0
-			};*/
-
-			Vector3 mtp = _moe.transform.position;
-			Vector3 btp = _burns.transform.position;
-
-			double [] moeInput = {
-				mtp.x,
-				mtp.z
-			};
-			double [] burnsInput = {
-				btp.x,
-				btp.z
 			};
 			
 			Matrix moeInputM = new Matrix(moeInput.Count(), 1, moeInput);
