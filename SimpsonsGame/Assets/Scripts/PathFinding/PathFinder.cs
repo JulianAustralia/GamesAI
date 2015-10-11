@@ -155,7 +155,7 @@ public class PathFinder : MonoBehaviour {
 		node.heuristicCost = 0;
 		node.beenChecked = true;
 		node.previousNode = null;
-		
+		Debug.Log("Making path from " + node.x + ", " + node.z + " to " + toNode.x + ", " + toNode.z);
 		while (node != toNode) {
 			
 			node.neighbours.ForEach(
@@ -188,9 +188,9 @@ public class PathFinder : MonoBehaviour {
 		}
 		
 		List<Vector3> resultingList = new List<Vector3>();
-		
+		Debug.Log("Building List");
 		while (node != null) {
-			
+			Debug.Log("x: " + node.x + " z: " + node.z);
 			resultingList.Insert(0, new Vector3(node.x, 0, node.z));
 			
 			node = node.previousNode;

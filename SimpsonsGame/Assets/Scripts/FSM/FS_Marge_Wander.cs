@@ -57,8 +57,8 @@ public class FS_Marge_Wander : FiniteState {
 			
 				_steeringController.SetBehaviours (
 					new List<SteeringBehaviour> () {
-						new SteerAvoidBuildings(this.transform),
-						new SteerWanderXZ(this.transform)
+						new SteerAvoidBuildings(transform),
+						new SteerWanderXZ(transform)
 					}
 				);
 
@@ -67,11 +67,11 @@ public class FS_Marge_Wander : FiniteState {
 				return this;
 			}
 		}
-
+		Debug.Log("Next path node x: " + _path[0].x + ", z: " + _path[0].z);
 		_steeringController.SetBehaviours(
 			new List<SteeringBehaviour>() {
-				new SteerAvoidBuildings(this.transform),
-				new SteerAlongPath(this.gameObject.transform, _path)
+				new SteerAvoidBuildings(transform),
+				new SteerAlongPath(transform, _path)
 			}
 		);
 
