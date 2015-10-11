@@ -111,7 +111,7 @@ public class GameMaster : MonoBehaviour {
 			train
 		);
 
-		Time.timeScale = 5;
+		Time.timeScale = 1;
 	}
 	
 	private void _swap(ref Vector3 a, ref Vector3 b) {
@@ -160,7 +160,7 @@ public class GameMaster : MonoBehaviour {
 			int ms = _moeZone.score;
 			int bs = _burnsZone.score;
 
-			double score = Math.Max(ms, bs) - Math.Abs(ms - bs) / 4 - _margeZone.score / 2 - _bartZone.score / 2;
+			double score = Math.Max(ms, bs) - Math.Abs(ms - bs);// / 4 - _margeZone.score / 2 - _bartZone.score / 2;
 
 			_callback(score);
 		} else {

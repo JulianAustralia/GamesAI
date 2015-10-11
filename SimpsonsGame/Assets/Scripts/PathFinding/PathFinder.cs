@@ -8,6 +8,7 @@ public class PathFinder : MonoBehaviour {
 	private Dictionary<int, Dictionary<int, PathNode>> _xzNodeDictionary = new Dictionary<int, Dictionary<int, PathNode>>();
 	
 	private int _buildingMask;
+	private System.Random _r = new System.Random();
 	
 	private class _PathNodeBuilder {
 		public PathNode parent;
@@ -20,7 +21,7 @@ public class PathFinder : MonoBehaviour {
 		}
 	}
 	
-	void Start () {
+	void Awake() {
 		
 		_buildingMask = 1 << LayerMask.NameToLayer("Building");
 		
@@ -270,5 +271,17 @@ public class PathFinder : MonoBehaviour {
 	public bool ValidPosition(int x, int z) {
 		
 		return _xzNodeDictionary.ContainsKey (x) && _xzNodeDictionary[x].ContainsKey(z);
+	}
+
+	public PathNode GetNode(int index) {
+
+		return _nodes[index];
+	}
+
+	public PathNode GetRandomPosition() {
+
+		int index = Mathf.FloorToInt(_nodes.Count * (float) _r.NextDouble());
+		Debug.Log(index + " " + _nodes.Count);
+		return _nodes[index];
 	}
 }

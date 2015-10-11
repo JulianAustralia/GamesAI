@@ -11,9 +11,9 @@ public class Matrix {
 	private int _size;
 	private double[] _data;
 
-	private _testCases() {
+	private void _testCases() {
 
-		if (_runTests) {
+		if (true) {
 			double[] xd = {0, 4, -2, -4, -3, 0};
 			Matrix x = new Matrix(2, 3, xd);
 
@@ -34,7 +34,7 @@ public class Matrix {
 			}
 		}
 
-		if (_runTests) {
+		if (true) {
 			double[] xd = {0, 4, -2, -4, -3, 0};
 			Matrix x = new Matrix(2, 3, xd);
 
@@ -55,7 +55,7 @@ public class Matrix {
 			}
 		}
 
-		if (_runTests) {
+		if (true) {
 			double[] xd = {0, 4, -2, -4, -3, 0};
 			Matrix x = new Matrix(2, 3, xd);
 

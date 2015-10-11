@@ -49,9 +49,23 @@ public class FS_Marge_ReturnHomer : FiniteState {
 		}
 
 		if ((_caughtHomer.transform.position - this.transform.position).sqrMagnitude < 9) {
-
-			_steeringController.Steer ();
+			
+			_steeringController.SetBehaviours(
+				new List<SteeringBehaviour>() {
+					new SteerAvoidBuildings(this.transform),
+					new SteerAlongPath(this.gameObject.transform, _path)
+				}
+			);
+		} else {
+			
+			_steeringController.SetBehaviours(
+				new List<SteeringBehaviour>() {
+					new SteerAvoidBuildings(this.transform),
+					new SteerToTarget(this.gameObject.transform, _caughtHomer.transform)
+				}
+			);
 		}
+		_steeringController.Steer();
 		
 		return this;
 	}

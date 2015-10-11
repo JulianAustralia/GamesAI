@@ -14,6 +14,7 @@ public class HomerFactory : MonoBehaviour {
 	private GameObject _original;
 	private float _originalY;
 	private float _spawnRadius;
+	private PathFinder _pathFinder;
 
 	private bool _initialized = false;
 
@@ -40,6 +41,8 @@ public class HomerFactory : MonoBehaviour {
 		Vector3 ot = _original.transform.localScale;
 		_spawnRadius = (float) (Mathf.Min(dt.x, dt.z) / 2f - 2 * Mathf.Max(ot.x, ot.z));
 
+		_pathFinder = GameObject.Find("PathFinder").GetComponent<PathFinder>();
+
 		// Move the Homer out of the world
 		_original.transform.position = new Vector3(0, -1000, 0);
 	}
@@ -52,38 +55,18 @@ public class HomerFactory : MonoBehaviour {
 
 		for (int i = 0; i < numberOfHomers; ++i) {
 
-			do {
-
-			float angle = UnityEngine.Random.Range(0, 2 * Mathf.PI);
-			float radius = UnityEngine.Random.Range(0, _spawnRadius);
-
-			Vector3 position = new Vector3(
-				Mathf.Sin(angle) * radius,
-				_originalY,
-				Mathf.Cos(angle) * radius
-			);
-
-			// Check if Homer's spawn is inside a building
-			if (Physics.Raycast(position, Vector3.up, 50, _buildingMask)) {
-
-				continue;
-			}
+			PathNode positionPN = _pathFinder.GetRandomPosition();
 
 			GameObject newHomer = (GameObject) Instantiate(
 				_original,
-				position,
-				Quaternion.identity
+				new Vector3(positionPN.x, _originalY, positionPN.z),
+				Quaternion.AngleAxis(
+					UnityEngine.Random.Range(0f, 360f),
+					Vector3.up
+				)
 			);
-
-			Vector3 euler = newHomer.transform.eulerAngles;
-			euler.y = UnityEngine.Random.Range(0f, 360f);
-			newHomer.transform.eulerAngles = euler;
-
+			
 			homers.Add(newHomer.GetComponent<Homer>());
-
-			break;
-
-			} while (true);
 		}
 
 		for (int i = 0; i < numberOfHomers; ++i) {

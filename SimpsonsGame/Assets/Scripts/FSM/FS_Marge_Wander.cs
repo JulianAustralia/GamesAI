@@ -75,7 +75,7 @@ public class FS_Marge_Wander : FiniteState {
 				);
 
 				_steeringController.Steer();
-		
+
 				return this;
 			}
 		}
@@ -86,7 +86,7 @@ public class FS_Marge_Wander : FiniteState {
 				new SteerAlongPath(this.gameObject.transform, _path)
 			}
 		);
-		
+
 		_steeringController.Steer();
 		
 		return this;
