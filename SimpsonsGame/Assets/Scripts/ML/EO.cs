@@ -27,7 +27,7 @@ public class EO {
 		int generations,
 		Action<ANNTrainer, Action<double>> train
 	){
-		
+
 		string timestamp = DateTime.UtcNow.ToString("yyyy_MM_dd_HH_mm_ss_fff");
 
 		List<ANN> population = new List<ANN>();

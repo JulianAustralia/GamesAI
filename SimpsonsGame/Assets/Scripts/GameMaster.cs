@@ -111,7 +111,7 @@ public class GameMaster : MonoBehaviour {
 			train
 		);
 
-		Time.timeScale = 10;
+		Time.timeScale = 5;
 	}
 	
 	private void _swap(ref Vector3 a, ref Vector3 b) {

@@ -20,9 +20,9 @@ public class Movement : MonoBehaviour {
 		_rigidbody = GetComponent<Rigidbody>();
 	}
 
-	public void Rotate(float xRot, float yRot, float zRot) {
+	public void Rotate(float yRot) {
 
-		_rigidbody.transform.Rotate(xRot, yRot, zRot);
+		_rigidbody.transform.Rotate(0, yRot, 0);
 	}
 
 	public void Move(Vector3 targetVelocity) {
@@ -35,12 +35,24 @@ public class Movement : MonoBehaviour {
 		}
 
 		_rigidbody.velocity += acceleration * Time.deltaTime;
+
+		_rigidbody.transform.eulerAngles = new Vector3(
+			0,
+			_rigidbody.transform.eulerAngles.y,
+			0
+		);
 	}
 
 	public void MoveForward(float targetVelocity) {
 
 		Move(
 			_rigidbody.transform.forward * targetVelocity
+		);
+
+		_rigidbody.transform.eulerAngles = new Vector3(
+			0,
+			_rigidbody.transform.eulerAngles.y,
+			0
 		);
 	}
 }

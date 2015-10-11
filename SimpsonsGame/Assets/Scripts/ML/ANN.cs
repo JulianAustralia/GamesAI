@@ -40,10 +40,10 @@ public class ANN {
 			Matrix activation = (
 				weight.dotProduct(activations.Last()) + biase
 			).map(
-				// sigmoid
+				// a sigmoid from -1 to 1
 				(d) => {
 
-					double result = 1 / (1 + Mathf.Exp((float)-d));
+					double result = 2 / (1 + Mathf.Exp((float)-d)) - 1;
 
 					return double.IsNaN(result) ? 0 : d < 0 ? -result : result;
 				}

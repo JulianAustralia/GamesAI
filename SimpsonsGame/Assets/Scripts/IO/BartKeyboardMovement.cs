@@ -49,7 +49,7 @@ public class BartKeyboardMovement : MonoBehaviour {
 			leftright = -leftright;
 		}
 
-		_movement.Rotate(0, leftright, 0);
+		_movement.Rotate(leftright);
 
 		_movement.MoveForward(
 			forwardback
