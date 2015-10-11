@@ -21,7 +21,6 @@ public class EO {
 	public EO(
 		int populationCount,
 		List<int> layers,
-		double crossOverChance,
 		double mutateChance,
 		double mutateMaxFactor,
 		int generations,
@@ -64,17 +63,13 @@ public class EO {
 				ANNTrainer best = trained[0];
 				ANNTrainer second = trained[1];
 
-				this.crossOver(ref best, ref second, crossOverChance);
-				
-				this.mutate(ref best, mutateChance, mutateMaxFactor);
-				this.mutate(ref second, mutateChance, mutateMaxFactor);
-				
+				// Add two children
+				trained[trained.Count() - 3] = this.haveChild(best, second, layers, mutateChance, mutateMaxFactor);
+				trained[trained.Count() - 2] = this.haveChild(best, second, layers, mutateChance, mutateMaxFactor);
+				// Add imigrant
 				trained[trained.Count() - 1] = new ANNTrainer(new ANN(layers));
 
-				for (int i = 0; i < populationCount; ++i) {
-
-					population[i] = trained[i].nn;
-				}
+				population = trained.ConvertAll<ANN>(trainer => trainer.nn);
 
 				System.IO.File.WriteAllText(
 					@"C:\Users\Public\EO\" + timestamp + "generation" + gen + ".txt",
@@ -121,47 +116,31 @@ public class EO {
 
 		trainGeneration(0);
 	}
-	
-	private void crossOver(ref ANNTrainer best, ref ANNTrainer second, double crossOverChance) {
 
-		List<Matrix> curBestBiases = best.nn._biases;
-		List<Matrix> curBestWeights = best.nn._weights;
-		List<Matrix> curSecondBiases = second.nn._biases;
-		List<Matrix> curSecondWeights = second.nn._weights;
-		
-		for (int i = 0; i < curBestBiases.Count(); ++i) {
-			
-			best.nn._biases[i] = curBestBiases[i].map(
-				(int row, int column, double b) => {
-				
-					return Rand.Chance(crossOverChance) ? curSecondBiases[i].getValue(row, column) : b;
-				}
-			);
-			second.nn._biases[i] = curSecondBiases[i].map(
-				(int row, int column, double b) => {
-				
-					return Rand.Chance(crossOverChance) ? curBestBiases[i].getValue(row, column) : b;
-				}
-			);
+	private ANNTrainer haveChild(
+		ANNTrainer parent1,
+		ANNTrainer parent2, 
+		List<int> layers,
+		double mutateChance,
+		double mutateMaxFactor
+	) {
+
+		ANNTrainer child = new ANNTrainer(new ANN(layers));
+
+		for (int i = 0; i < parent1.nn._biases.Count(); ++i) {
+
+			child.nn._biases[i] = Rand.Chance(.5) ? parent1.nn._biases[i] : parent2.nn._biases[i];
 		}
-		for (int i = 0; i < curBestWeights.Count(); ++i) {
-			
-			best.nn._weights[i] = curBestWeights[i].map(
-				(int row, int column, double b) => {
-				
-					return Rand.Chance(crossOverChance) ? curSecondWeights[i].getValue(row, column) : b;
-				}
-			);
-			second.nn._weights[i] = curSecondWeights[i].map(
-				(int row, int column, double b) => {
-				
-					return Rand.Chance(crossOverChance) ? curBestWeights[i].getValue(row, column) : b;
-				}
-			);
+
+		for (int i = 0; i < parent1.nn._weights.Count(); ++i) {
+
+			child.nn._weights[i] = Rand.Chance(.5) ? parent1.nn._weights[i] : parent2.nn._weights[i];
 		}
+
+		return mutate(child, mutateChance, mutateMaxFactor);
 	}
 	
-	private void mutate(ref ANNTrainer trainer, double mutateChance, double mutateMaxFactor) {
+	private ANNTrainer mutate(ANNTrainer trainer, double mutateChance, double mutateMaxFactor) {
 
 		for (int i = 0; i < trainer.nn._biases.Count(); ++i) {
 
@@ -182,6 +161,8 @@ public class EO {
 				}
 			);
 		}
+
+		return trainer;
 	}
 
 	private class Rand {

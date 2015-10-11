@@ -251,7 +251,7 @@ public class Matrix {
 	public static Matrix operator +(Matrix m1, Matrix m2) {
 		
 		if (!m1.sameDimensions(m2))
-			throw new Exception("Matrix +");
+			throw new Exception("Matrix + " + m1._rows + "," + m1._columns + " " + m2._rows + "," + m2._columns);
 
 		return m1.map(
 			(int x, int y, double value) => value + m2.getValue(x, y)
