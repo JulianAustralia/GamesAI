@@ -28,7 +28,7 @@ public class Marge : Enemy {
 		_factory.homers.ForEach(
 			(Homer h) => {
 
-				if (h.disabled) return;
+				if (h.capturer == this.gameObject) return;
 
 				Vector3 vec = this.gameObject.transform.position - h.gameObject.transform.position;
 				float distance = vec.sqrMagnitude;

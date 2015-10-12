@@ -64,6 +64,8 @@ public class SafeZone : MonoBehaviour {
 
 				if (x >= _left && x <= _right && z >= _back && z <= _front) {
 
+					h.SetWaiting(hunter.gameObject, transform);
+
 					++scoreChange;
 				}
 			}

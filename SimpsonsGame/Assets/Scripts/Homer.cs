@@ -17,30 +17,36 @@ public class Homer : MonoBehaviour {
 	public List<Homer> otherHomers;
 	public List<Enemy> enemies;
 
-	public bool disabled = false;
+	public GameObject capturer = null;
 
 	private FiniteStateMachine _FSM;
 	private FS_Homer_Follow _FSFollow;
-	private FS_Homer_Wait _FSFWait;
+	private FS_Homer_Wait _FSWait;
 
 	protected void Awake() {
 
 		_FSM = GetComponent<FiniteStateMachine>();
 		_FSFollow = GetComponent<FS_Homer_Follow>();
-		_FSFWait = GetComponent<FS_Homer_Wait>();
+		_FSWait = GetComponent<FS_Homer_Wait>();
 	}
 
-	public void SetCaught(GameObject capturer) {
+	public void SetCaught(GameObject c) {
 
-		_FSFollow.StartFollowing(capturer.transform);
+		capturer = c;
+		_FSFollow.StartFollowing(c.transform);
 		_FSM.currentState = _FSFollow;
-		disabled = true;
 	}
 
-	public void SetWaiting(Transform waitPoint) {
+	public void SetWaiting(GameObject c, Transform waitPoint) {
 
-		_FSFWait.StartWaiting(waitPoint);
-		_FSM.currentState = _FSFWait;
+		capturer = c;
+		_FSWait.StartWaiting(waitPoint);
+		_FSM.currentState = _FSWait;
+	}
+
+	public bool isWaiting() {
+
+		return (_FSM.currentState as FS_Homer_Wait) != null;
 	}
 
 	public bool HomerTooClose() {

@@ -41,15 +41,16 @@ public class FS_Marge_ReturnHomer : FiniteState {
 	
 	public override FiniteState CheckState() {
 
-		if (_path.Count == 0) {
+		// Homer can be set to waiting by the score zone
+		if (_caughtHomer.isWaiting() || _path.Count == 0) {
 
-			_caughtHomer.SetWaiting(_dropPoint);
+			_caughtHomer.SetWaiting(gameObject, _dropPoint);
 
 			return _wander;
 		}
 
 		if ((_caughtHomer.transform.position - this.transform.position).sqrMagnitude < 9) {
-			
+
 			_steeringController.SetBehaviours(
 				new List<SteeringBehaviour>() {
 					new SteerAvoidBuildings(this.transform),
@@ -57,7 +58,7 @@ public class FS_Marge_ReturnHomer : FiniteState {
 				}
 			);
 		} else {
-			
+
 			_steeringController.SetBehaviours(
 				new List<SteeringBehaviour>() {
 					new SteerAvoidBuildings(this.transform),

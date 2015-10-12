@@ -9,58 +9,46 @@ using System.Linq;
 public class FS_Homer_Wait : FiniteState {
 
 	private SteeringController _steeringController;
-	private Marge _marge;
-	private Homer _homer;
 	private FS_Homer_Escape _escape;
-	private bool _avoidingMarge;
 	private Transform _waitPoint;
+	private Homer _homer;
 	
 	protected void Awake() {
 		
 		_steeringController = GetComponent<SteeringController>();
-		_marge = GameObject.Find("Marge").GetComponent<Marge>();
-		_homer = this.GetComponent<Homer>();
-		_escape = this.GetComponent<FS_Homer_Escape>();
+		_homer = GetComponent<Homer>();
+		_escape = GetComponent<FS_Homer_Escape>();
 	}
 
 	public void StartWaiting(Transform waitPoint) {
 
-		_avoidingMarge = false;
 		_waitPoint = waitPoint;
 	}
 	
 	public override FiniteState CheckState() {
 
-		if (_homer.GetTooCloseEnemies().Exists((Enemy e) => e.gameObject != _marge.gameObject)) {
+		if (_homer.GetTooCloseEnemies().Exists((Enemy e) => e.gameObject != _homer.capturer)) {
 
-			_homer.disabled = false;
+			_homer.capturer = null;
 			return _escape;
 		}
 
-		if ((_marge.transform.position - this.transform.position).sqrMagnitude < 9) {
+		if ((_homer.capturer.transform.position - this.transform.position).sqrMagnitude < 9) {
 
-			if (_avoidingMarge == false) {
-
-				_steeringController.SetBehaviours(
-					new List<SteeringBehaviour>() {
-						new SteerAvoidBuildings(this.transform),
-						new SteerFromTarget(this.transform, _marge.transform)
-					}
-				);
-				_avoidingMarge = true;
-			}
+			_steeringController.SetBehaviours(
+				new List<SteeringBehaviour>() {
+					new SteerAvoidBuildings(this.transform),
+					new SteerFromTarget(this.transform, _homer.capturer.transform)
+				}
+			);
 		} else {
 
-			if (_avoidingMarge == true) {
-
-				_steeringController.SetBehaviours(
-					new List<SteeringBehaviour>() {
-						new SteerAvoidBuildings(this.transform),
-						new SteerToTarget(this.transform, _waitPoint)
-					}
-				);
-				_avoidingMarge = false;
-			}
+			_steeringController.SetBehaviours(
+				new List<SteeringBehaviour>() {
+					new SteerAvoidBuildings(this.transform),
+					new SteerToTarget(this.transform, _waitPoint)
+				}
+			);
 		}
 		
 		_steeringController.Steer();
