@@ -10,7 +10,7 @@ public class GameMaster : MonoBehaviour {
 	public GameObject gameOverPanel;
 	public Text timeText;
 
-	public const float stageTime = 150;
+	public const float stageTime = 60;
 	public const float updateFrequency = 1;
 
 	private int _buildingMask;
@@ -41,7 +41,7 @@ public class GameMaster : MonoBehaviour {
 		_marge.GetComponent<Marge>().initialise();
 
 		_machines = _homerFactory.homers.ConvertAll<FiniteStateMachine>(h => h.GetComponent<FiniteStateMachine>());
-		_machines.Add(_marge.GetComponent<FiniteStateMachine>());
+		//_machines.Add(_marge.GetComponent<FiniteStateMachine>());
 
 		_zones.ForEach((SafeZone s) => s.initialise());
 
@@ -79,13 +79,15 @@ public class GameMaster : MonoBehaviour {
 
 		_homerFactory = GameObject.Find("HomerFactory").GetComponent<HomerFactory>();
 
-		const int populationCount = 10;
+		const int populationCount = 8;
 		List<int> layers = new List<int>();
 		layers.Add(8); // Input layer
 		layers.Add(18); // Hidden layer
 		layers.Add(2); // Output layer
-		const double mutateChance = .3;
+		const double mutateChance = .4;
 		const double mutateMaxFactor = .4;
+		const double migrationPercentage = 0;
+		const double childrenPercentage = .19;
 		const int generations = 1000;
 		Action<ANNTrainer, Action<double>> train = (ANNTrainer t, Action<double> callback) => {
 		
@@ -95,15 +97,16 @@ public class GameMaster : MonoBehaviour {
 		};
 
 		new EO(
-			populationCount,
-			layers,
+			//populationCount,
+			//layers,
+			@"C:\Users\Public\EO\mc40mmf40mp0cp19g1000p8generation8.txt",
 			mutateChance,
 			mutateMaxFactor,
+			migrationPercentage,
+			childrenPercentage,
 			generations,
 			train
 		);
-
-		Time.timeScale = 1;
 	}
 	
 	private void _swap(ref Vector3 a, ref Vector3 b) {
@@ -151,13 +154,54 @@ public class GameMaster : MonoBehaviour {
 
 			int ms = _moeZone.score;
 			int bs = _burnsZone.score;
+			int marges = _margeZone.score;
+			int barts = _bartZone.score;
 
-			double score = Math.Max(ms, bs) - Math.Abs(ms - bs);// / 4 - _margeZone.score / 2 - _bartZone.score / 2;
+			//double score = Math.Max(ms, bs) - Math.Abs(ms - bs) - marges - barts;// / 4 - _margeZone.score / 2 - _bartZone.score / 2;
 
-			_callback(score);
+			/*double mx = _moe.transform.position.x * _moe.transform.position.x;
+			double mz = _moe.transform.position.z * _moe.transform.position.z;
+			double bx = _burns.transform.position.x * _burns.transform.position.x;
+			double bz = _burns.transform.position.z * _burns.transform.position.z;
+
+			double m = Mathf.Sqrt((float) (mx + mz));
+			double b = Mathf.Sqrt((float) (bx + bz));*/
+
+			/*double d = m + b;
+			double smallDistanceScore;
+			if (d < 20) smallDistanceScore = .5;
+			else if (d < 30) smallDistanceScore = 1;
+			else if (d < 50) smallDistanceScore = .5;
+			else if (d < 60) smallDistanceScore = .3;
+			else if (d < 80) smallDistanceScore = 0;
+			else smallDistanceScore = -.3;
+
+			_callback(score + smallDistanceScore);*/
+
+			/*double mCount = 0;
+			double bCount = 0;
+
+			_homerFactory.homers.ForEach(
+				h => {
+				
+					Vector3 dispM = (_moe.transform.position - h.transform.position);
+					double distM = Mathf.Sqrt((float) (dispM.x * dispM.x + dispM.z * dispM.z));
+
+					mCount += -.1 * distM * distM + 10;
+
+					Vector3 dispB = (_burns.transform.position - h.transform.position);
+					double distB = Mathf.Sqrt((float) (dispB.x * dispB.x + dispB.z * dispB.z));
+
+					bCount += -.1 * distB * distB + 10;
+				}
+			);*/
+
+			_callback(bs - (ms + marges + barts) / 2);
 		} else {
 
 			_bart.transform.position = new Vector3(200, 2, 200);
+			_marge.transform.position = new Vector3(200, 2, 200);
+			_moe.transform.position = new Vector3(200, 2, 200);
 
 			_machines.ForEach(m => m.UpdateState());
 
@@ -334,24 +378,24 @@ public class GameMaster : MonoBehaviour {
 				//burnsObstacleFrontRight ? 1 : 0
 			};
 			
-			Matrix moeInputM = new Matrix(moeInput.Count(), 1, moeInput);
+			//Matrix moeInputM = new Matrix(moeInput.Count(), 1, moeInput);
 			Matrix burnsInputM = new Matrix(burnsInput.Count(), 1, burnsInput);
 			
-			Matrix moeMove = _nn.nn.getResult(moeInputM);
+			//Matrix moeMove = _nn.nn.getResult(moeInputM);
 			Matrix burnsMove = _nn.nn.getResult(burnsInputM);
 
-			Vector3 moeMoveV = new Vector3(
+			/*Vector3 moeMoveV = new Vector3(
 				(float) moeMove.getValue(0, 0),
 				0f,
 				(float) moeMove.getValue(1, 0)
-			);
+			);*/
 			Vector3 burnsMoveV = new Vector3(
 				(float) burnsMove.getValue(0, 0),
 				0f,
 				(float) burnsMove.getValue(1, 0)
 			);
 
-			_moeMovement.Move(moeMoveV);
+			//_moeMovement.Move(moeMoveV);
 			_burnsMovement.Move(burnsMoveV);
 		}
 	}

@@ -89,7 +89,7 @@ public class Matrix {
 			}
 		}
 	}
-	
+
 	public Matrix(int rows, int columns, Func<int, int, double> lambda) {
 
 		_rows = rows;
@@ -120,6 +120,35 @@ public class Matrix {
 
 			_data[i] = values[i];
 		}
+	}
+
+	public Matrix(string matrixString) {
+
+		const string beginToken = "[";
+		const string middleToken = ",";
+		const string endToken = "]";
+		const string splitter = endToken + middleToken + beginToken;
+
+		List<List<double>> columnsOfRows = matrixString.Substring (
+			beginToken.Length + 1,
+			matrixString.Length - beginToken.Length - endToken.Length - 2
+		).Split(
+			new[] { splitter },
+			System.StringSplitOptions.None
+		).ToList().ConvertAll<List<double>>(
+			row => row.Split(
+				new[] { "," },
+				System.StringSplitOptions.None
+			).ToList().ConvertAll<double>(
+				ds => Convert.ToDouble(ds)
+			)
+		);
+
+		_rows = columnsOfRows.Count;
+		_columns = columnsOfRows.First().Count;
+		_size = _rows * _columns;
+		// Flatten the list of lists
+		_data = columnsOfRows.SelectMany(row => row).ToArray();
 	}
 	
 	public Matrix map(Func<int, int, double, double> lambda) {

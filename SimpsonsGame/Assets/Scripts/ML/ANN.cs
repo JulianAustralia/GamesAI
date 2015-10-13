@@ -5,10 +5,6 @@ using UnityEngine;
 
 public class ANN {
 
-	private int _numInput;
-	private int _numHidden;
-	private int _numOutput;
-
 	// I wouldn't normally make this public except that EO needs
 	// access to it and I don't see much use in making EO extend ANN
 	// or creating getters and setters
@@ -26,6 +22,41 @@ public class ANN {
 			this._biases.Add(Matrix.RandomDist(thisSize, 1));
 			this._weights.Add(Matrix.RandomDist(thisSize, previousSize) / Mathf.Sqrt(previousSize));
 		}
+	}
+
+	public ANN(string biases, string weights) {
+
+		const string beginToken = "[[";
+		const string middleToken = ",";
+		const string endToken = "]]";
+		const string splitter = endToken + middleToken + beginToken;
+
+		this._biases = biases.Substring(
+			beginToken.Length + 1,
+			biases.Length - beginToken.Length - endToken.Length - 1
+		).Split(
+			new[] { splitter },
+			System.StringSplitOptions.None
+		).ToList().ConvertAll<Matrix>(s => new Matrix(beginToken + s + endToken));
+
+		this._weights = weights.Substring(
+			beginToken.Length + 1,
+			weights.Length - beginToken.Length - endToken.Length - 1
+		).Split(
+			new[] { splitter },
+			System.StringSplitOptions.None
+		).ToList().ConvertAll<Matrix>(s => new Matrix(beginToken + s + endToken));
+	}
+
+	public List<int> getLayers() {
+
+		List<int> layers = this._biases.ConvertAll<int>(b => b.getRows());
+		layers.Insert(
+			0,
+			this._weights.First().getColumns()
+		);
+
+		return layers;
 	}
 
 	public List<Matrix> feedForward(Matrix input) {

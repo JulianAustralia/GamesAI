@@ -54,7 +54,7 @@ public class HomerFactory : MonoBehaviour {
 				_original,
 				//new Vector3(positionPN.x, _originalY, positionPN.z),
 				// For the purpose of training, start Homers near center
-				new Vector3(UnityEngine.Random.Range(0, 20), _originalY, UnityEngine.Random.Range(0, 20)),
+				new Vector3(UnityEngine.Random.Range(0, 15), _originalY, UnityEngine.Random.Range(0, 15)),
 				Quaternion.AngleAxis(
 					UnityEngine.Random.Range(0f, 360f),
 					Vector3.up
